@@ -450,13 +450,12 @@
   .temp-card-expand-inner{
     overflow:hidden;
     min-height:0;
-    display:flex;
-    align-items:center;
+    display:grid;
+    grid-template-columns:1fr 1fr;
     gap:8px;
   }
   .box-card.expanded .temp-card-expand-inner{ padding-top:12px; }
   .temp-card-expand-inner .btn-ghost{
-    flex:1;
     text-align:center;
     padding:8px 10px;
   }
@@ -1434,6 +1433,10 @@
   .wa-status.cancelled{
     color: #C44444;
     background: #FBEAEA;
+  }
+  .wa-status.done{
+    color: var(--ink-soft);
+    background: var(--line);
   }
 
   .btn-whatsapp{
@@ -3328,7 +3331,9 @@
   }
 
   function tempStatusLabel(status){
-    return status === 'активен' ? 'Активен' : 'Бронь';
+    if(status === 'активен') return 'Активен';
+    if(status === 'завершена') return 'Завершена';
+    return 'Бронь';
   }
 
   function openTemporaryModal(){
@@ -3359,7 +3364,8 @@
     document.getElementById('input-temp-duration-value').value = b.durationValue || '';
     document.getElementById('input-temp-start-date').value = b.startDate || '';
     document.getElementById('input-temp-start-time').value = b.startTime || '';
-    selectTempStatus(document.querySelector(`#temp-status-select .chip-option[data-value="${b.status || 'бронь'}"]`));
+    const statusToSelect = b.status === 'активен' ? 'активен' : 'бронь';
+    selectTempStatus(document.querySelector(`#temp-status-select .chip-option[data-value="${statusToSelect}"]`));
     document.getElementById('btn-delete-temporary').style.display = 'flex';
     document.getElementById('temporary-modal').classList.add('open');
   }
@@ -3415,6 +3421,28 @@
     showToast('Бронь удалена');
   }
 
+  function quickExtendTemporary(index){
+    const b = temporaryBookings[index];
+    if(!b) return;
+    const unit = b.durationType === 'сутки' ? 'сут.' : 'ч.';
+    const current = parseFloat(b.durationValue) || 0;
+    b.durationValue = String(current + 1);
+    logActivity(`Продлена временная бронь «${b.name}» до ${b.durationValue} ${unit}`);
+    renderTemporaryList();
+    renderReport();
+    showToast(`Продлено до ${b.durationValue} ${unit}`);
+  }
+
+  function completeTemporaryBooking(index){
+    const b = temporaryBookings[index];
+    if(!b) return;
+    b.status = 'завершена';
+    logActivity(`Завершена временная бронь «${b.name}»`);
+    renderTemporaryList();
+    renderReport();
+    showToast('Бронь завершена');
+  }
+
   function renderTemporaryList(){
     const list = document.getElementById('temporary-list');
     const emptyEl = document.getElementById('temporary-empty');
@@ -3426,7 +3454,7 @@
       card.className = 'box-card just-added';
       card.id = 'temp-card-' + i;
       card.onclick = () => toggleTempCardExpand(i);
-      const statusClass = b.status === 'активен' ? 'connected' : '';
+      const statusClass = b.status === 'активен' ? 'connected' : (b.status === 'завершена' ? 'done' : '');
       card.innerHTML = `
         <div class="thumb">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
@@ -3442,9 +3470,10 @@
           <div class="temp-timer" id="temp-timer-${i}"></div>
           <div class="temp-card-expand">
             <div class="temp-card-expand-inner">
-              <span class="wa-status ${b.status === 'активен' ? 'connected' : ''}">${b.status === 'активен' ? 'Открыт' : 'Бронь'}</span>
-              <button type="button" class="btn-ghost" onclick="event.stopPropagation(); openEditTemporary(${i})">Продлить</button>
+              <button type="button" class="btn-ghost" onclick="event.stopPropagation(); openEditTemporary(${i})">Изменить</button>
+              <button type="button" class="btn-ghost" onclick="event.stopPropagation(); quickExtendTemporary(${i})">Продлить</button>
               <button type="button" class="btn-ghost" onclick="event.stopPropagation(); openTempPaymentModal(${i})">Оплатить</button>
+              <button type="button" class="btn-ghost" onclick="event.stopPropagation(); completeTemporaryBooking(${i})">Завершить</button>
             </div>
           </div>
         </div>`;

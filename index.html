@@ -147,6 +147,9 @@
   .icon-btn.add-btn.is-hidden{
     display:none;
   }
+  .nav-btn.is-hidden{
+    display:none;
+  }
   @keyframes pop{
     0%{ transform: scale(0.9); opacity:0; }
     60%{ transform: scale(1.02); opacity:1; }
@@ -366,11 +369,97 @@
     flex-shrink:0;
   }
   .box-card .thumb svg{ width:32px; height:32px; stroke: var(--gold-deep); }
-  .box-card .body{ flex:1; }
-  .box-card h4{ font-size:14.5px; font-weight:700; color:var(--ink); margin-bottom:3px; }
+  .box-card .body{ flex:1; min-width:0; }
+  .box-card-top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .box-card h4{
+    font-size:14.5px;
+    font-weight:700;
+    color:var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .box-card-price{
+    font-family:'Unbounded', sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    color: var(--gold-deep);
+    white-space:nowrap;
+    flex-shrink:0;
+  }
   .box-card .dims{ font-size:11.5px; color:var(--ink-soft); margin-bottom:8px; }
+  .box-card-debts{
+    display:flex;
+    align-items:stretch;
+    background: var(--cream);
+    border-radius:12px;
+    padding:9px 12px;
+    margin:9px 0 8px;
+    gap:12px;
+  }
+  .box-card-debt-item{
+    flex:1;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+  }
+  .box-card-debt-label{
+    font-size:9.5px;
+    font-weight:700;
+    color: var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .box-card-debt-value{
+    font-family:'Unbounded', sans-serif;
+    font-size:13px;
+    font-weight:700;
+    color: var(--sage-deep);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .box-card-debt-value.due{ color: var(--gold-deep); }
+  .box-card-debt-divider{ width:1px; background: var(--line); flex-shrink:0; }
   .box-card .foot{ display:flex; align-items:center; justify-content:space-between; }
   .box-card .price{ font-family:'Unbounded',sans-serif; font-size:14px; color:var(--gold-deep); font-weight:700; }
+
+  .temp-timer{
+    font-family:'Unbounded', sans-serif;
+    font-size:11.5px;
+    font-weight:700;
+    color: var(--gold-deep);
+    background: var(--cream);
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:100px;
+    margin-bottom:2px;
+  }
+  .temp-card-expand{
+    display:grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .25s ease;
+  }
+  .box-card.expanded .temp-card-expand{ grid-template-rows: 1fr; }
+  .temp-card-expand-inner{
+    overflow:hidden;
+    min-height:0;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .box-card.expanded .temp-card-expand-inner{ padding-top:12px; }
+  .temp-card-expand-inner .btn-ghost{
+    flex:1;
+    text-align:center;
+    padding:8px 10px;
+  }
   .btn-ghost{
     font-size:12px;
     font-weight:700;
@@ -381,6 +470,7 @@
     border-radius:100px;
     cursor:pointer;
   }
+  .btn-ghost:disabled{ opacity:0.45; cursor:not-allowed; }
   .tag-free{
     display:inline-block;
     font-size:10px;
@@ -723,6 +813,15 @@
   }
   .settings-section.open .settings-section-body{ padding:14px 16px 16px; }
   .backup-actions{ display:flex; flex-direction:column; gap:8px; }
+  .settings-subsection-title{
+    font-family:'Unbounded', sans-serif;
+    font-size:11px;
+    font-weight:700;
+    color: var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin: 2px 0 8px;
+  }
   .backup-actions .btn-ghost{
     width:100%;
     display:flex;
@@ -973,6 +1072,71 @@
     color: var(--ink);
     margin: 18px 0 10px;
   }
+
+  .detail-collapse-section{
+    border:1px solid var(--line);
+    border-radius:16px;
+    margin-bottom:12px;
+    overflow:hidden;
+    background: var(--white);
+  }
+  .detail-collapse-toggle{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:13px 14px;
+    background:none;
+    border:none;
+    margin:0;
+    font-family:inherit;
+    text-align:left;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .detail-collapse-toggle:active{ background: var(--cream); }
+  .detail-collapse-title{
+    font-family:'Unbounded', sans-serif;
+    font-size:13px;
+    font-weight:600;
+    color: var(--ink);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .detail-collapse-count{
+    font-family:'Manrope', sans-serif;
+    font-size:11px;
+    font-weight:700;
+    color: var(--ink-soft);
+    background: var(--cream);
+    padding:2px 8px;
+    border-radius:100px;
+  }
+  .detail-collapse-chevron{
+    width:20px; height:20px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: transform .25s ease;
+  }
+  .detail-collapse-chevron svg{ width:15px; height:15px; stroke: var(--ink-soft); }
+  .detail-collapse-section.open .detail-collapse-chevron{ transform: rotate(180deg); }
+  .detail-collapse-section.open .detail-collapse-toggle{ border-bottom:1px solid var(--line); }
+  .detail-collapse-body{
+    display:grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .28s ease;
+  }
+  .detail-collapse-section.open .detail-collapse-body{ grid-template-rows: 1fr; }
+  .detail-collapse-body-inner{
+    overflow:hidden;
+    min-height:0;
+    padding:0 14px;
+  }
+  .detail-collapse-section.open .detail-collapse-body-inner{ padding:10px 14px 14px; }
   .history-item{
     display:flex;
     align-items:center;
@@ -1267,6 +1431,10 @@
     color: #1D8A4C;
     background: #E3F3E9;
   }
+  .wa-status.cancelled{
+    color: #C44444;
+    background: #FBEAEA;
+  }
 
   .btn-whatsapp{
     width:100%;
@@ -1461,6 +1629,19 @@
       </div>
     </div>
 
+    <!-- TEMPORARY BOOKINGS -->
+    <div class="screen" id="screen-temporary">
+      <div class="eyebrow-free">Короткий срок</div>
+      <h1 class="page-title">Временные боксы</h1>
+
+      <div id="temporary-list"></div>
+
+      <div class="empty-state" id="temporary-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <p>Пока нет ни одной временной брони.<br>Нажмите «+» вверху, чтобы добавить.</p>
+      </div>
+    </div>
+
     <!-- BOXES -->
     <div class="screen" id="screen-boxes">
       <div class="eyebrow-free">Каталог</div>
@@ -1503,6 +1684,10 @@
     <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>
       <span class="nav-label">Главная</span>
+    </button>
+    <button class="nav-btn is-hidden" id="nav-temporary" onclick="showScreen('temporary')">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      <span class="nav-label">Временные</span>
     </button>
     <button class="nav-btn" id="nav-boxes" onclick="showScreen('boxes')">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8"/><path d="M12 12v8"/></svg>
@@ -1738,14 +1923,11 @@
         </button>
         <div class="settings-section-collapse">
           <div class="settings-section-body">
+            <div class="settings-subsection-title">Вариант 1 — файлом</div>
             <div class="field backup-actions">
               <button type="button" class="btn-ghost" onclick="downloadBackup()">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
                 Скачать файл копии
-              </button>
-              <button type="button" class="btn-ghost" onclick="copyBackupToClipboard()">
-                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                Скопировать в буфер
               </button>
               <label class="btn-ghost" style="cursor:pointer;">
                 <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
@@ -1753,7 +1935,84 @@
                 <input type="file" id="input-restore-file" accept="application/json" style="display:none;" onchange="restoreFromFile(event)">
               </label>
             </div>
+
+            <div class="settings-subsection-title" style="margin-top:16px;">Вариант 2 — текстом (буфер обмена)</div>
+            <div class="field backup-actions">
+              <button type="button" class="btn-ghost" onclick="copyBackupToClipboard()">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Скопировать в буфер
+              </button>
+            </div>
+            <div class="field">
+              <textarea id="input-restore-text" style="height:80px;" placeholder="Вставьте сюда скопированный текст резервной копии (Ctrl+V)"></textarea>
+              <div class="field backup-actions" style="margin-top:8px; margin-bottom:0;">
+                <button type="button" class="btn-ghost" onclick="pasteFromClipboardToRestore()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-3"/></svg>
+                  Вставить из буфера
+                </button>
+                <button type="button" class="btn-ghost" onclick="restoreFromText()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+                  Восстановить из текста
+                </button>
+              </div>
+            </div>
+
             <div class="meter-hint">Копия включает боксы, контакты, настройки и историю операций.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section" id="settings-section-reset">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
+          <span class="settings-section-icon" style="background:#FBEAEA; border-color:rgba(196,68,68,0.3);">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#C44444"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+          </span>
+          <span class="settings-section-title">
+            <h4>Полный сброс</h4>
+            <p>Удаляет все боксы, контакты, историю и настройки без возможности восстановления</p>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="meter-hint">Сделайте резервную копию перед сбросом (см. выше) — это действие необратимо и удалит вообще всё на этом устройстве.</div>
+            <button type="button" class="btn-ghost" id="btn-full-reset" style="width:100%; margin-top:10px; background:#FBEAEA; border-color:rgba(196,68,68,0.35); color:#C44444;" onclick="startFullReset()">Полный сброс приложения</button>
+            <div id="full-reset-timer" style="display:none; margin-top:10px;">
+              <div class="meter-hint" id="full-reset-timer-text" style="color:#C44444;"></div>
+              <button type="button" class="btn-ghost" id="btn-full-reset-confirm" style="width:100%; margin-top:8px; background:#C44444; border-color:#C44444; color:#fff;" disabled onclick="confirmFullReset()">Подтвердить полный сброс</button>
+              <button type="button" class="btn-ghost" style="width:100%; margin-top:8px;" onclick="cancelFullReset()">Отмена</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section" id="settings-section-temporary">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
+          <span class="settings-section-icon settings-section-icon--sage">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          </span>
+          <span class="settings-section-title">
+            <h4>Временные боксы <span id="temporary-status-badge" class="wa-status">выкл</span></h4>
+            <p>Отдельная вкладка внизу экрана для клиентов на короткий срок</p>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="field">
+              <label>Включить временные боксы</label>
+              <div class="toggle-row">
+                <span class="toggle-desc">Добавляет вкладку «Временные» внизу экрана — отдельный список для клиентов на короткий срок (посуточно, почасово), не смешанный с основными боксами</span>
+                <label class="switch">
+                  <input type="checkbox" id="input-temporary-enabled">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1804,6 +2063,23 @@
       </div>
 
       <div class="field">
+        <label>Дата первого платежа</label>
+        <input type="date" id="input-box-first-payment">
+        <div class="meter-hint">Если клиент заезжает не с начала месяца, укажите дату первого платежа отдельно — она индивидуальная. Все следующие платежи будут считаться по обычному «Дню оплаты» выше.</div>
+      </div>
+
+      <div class="field" id="field-box-temporary" style="display:none;">
+        <label>Временный бокс</label>
+        <div class="toggle-row">
+          <span class="toggle-desc">Отметьте, если бокс сдаётся на короткий срок, а не на постоянной основе</span>
+          <label class="switch">
+            <input type="checkbox" id="input-box-temporary">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
         <label>Начальные показания счётчика (кВт)</label>
         <input type="number" id="input-box-meter" placeholder="Например: 1245">
       </div>
@@ -1824,6 +2100,90 @@
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeBoxModal()">Отмена</button>
         <button class="btn-save" onclick="saveBox()">Сохранить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMPORARY BOOKING MODAL -->
+  <div class="modal-overlay" id="temporary-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="btn-delete-icon" id="btn-delete-temporary" title="Удалить бронь" onclick="deleteTemporaryBooking()" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+      </div>
+      <div class="btn-close-icon" onclick="closeTemporaryModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </div>
+      <h3 id="temporary-modal-title">Временная бронь</h3>
+
+      <div class="field">
+        <label>Имя клиента</label>
+        <input type="text" id="input-temp-name" placeholder="Например: Иван Иванов">
+      </div>
+
+      <div class="field">
+        <label>Номер телефона</label>
+        <input type="tel" id="input-temp-phone" placeholder="+7 900 000-00-00">
+      </div>
+
+      <div class="field">
+        <label>На какое время</label>
+        <div class="chip-select" id="temp-duration-select">
+          <div class="chip-option active" data-value="часы" onclick="selectTempDuration(this)">Часы</div>
+          <div class="chip-option" data-value="сутки" onclick="selectTempDuration(this)">Сутки</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>На какой срок</label>
+        <div class="unit-input-row">
+          <input type="number" id="input-temp-duration-value" min="1" placeholder="Например: 3">
+          <div class="unit-suffix" id="temp-duration-suffix">ч.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Дата начала</label>
+        <input type="date" id="input-temp-start-date">
+      </div>
+
+      <div class="field">
+        <label>Время начала</label>
+        <input type="time" id="input-temp-start-time">
+      </div>
+
+      <div class="field">
+        <label>Статус</label>
+        <div class="chip-select" id="temp-status-select">
+          <div class="chip-option active" data-value="бронь" onclick="selectTempStatus(this)">Бронь</div>
+          <div class="chip-option" data-value="активен" onclick="selectTempStatus(this)">Активен</div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeTemporaryModal()">Отменить</button>
+        <button class="btn-save" id="btn-save-temporary" onclick="saveTemporaryBooking()">Добавить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMPORARY BOOKING PAYMENT -->
+  <div class="modal-overlay" id="temporary-payment-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="btn-close-icon" onclick="closeTempPaymentModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </div>
+      <h3>Оплата — <span id="temp-payment-name"></span></h3>
+
+      <div class="field">
+        <label>Сумма</label>
+        <input type="text" id="input-temp-payment-amount" placeholder="Например: 500 ₽">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeTempPaymentModal()">Отменить</button>
+        <button class="btn-save" onclick="saveTempPayment()">Оплатить</button>
       </div>
     </div>
   </div>
@@ -1998,21 +2358,43 @@
       <div class="payday-line" id="detail-meter" style="display:none;"></div>
       <div class="payday-line" id="detail-split" style="display:none;"></div>
 
-      <div class="detail-section-title">История оплаты</div>
-      <div id="detail-history-list"></div>
-      <div class="empty-state small" id="detail-history-empty">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16h16"/><path d="M8 15l3-3 3 2 4-5"/></svg>
-        <p>Платежей пока не было</p>
+      <button class="btn-save" style="width:100%; margin:16px 0;" onclick="openPaymentModal()">Добавить платёж</button>
+
+      <div class="detail-collapse-section" id="detail-history-section">
+        <button type="button" class="detail-collapse-toggle" onclick="toggleDetailSection(this)">
+          <span class="detail-collapse-title">История оплаты <span class="detail-collapse-count" id="detail-history-count">0</span></span>
+          <span class="detail-collapse-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="detail-collapse-body">
+          <div class="detail-collapse-body-inner">
+            <div id="detail-history-list"></div>
+            <div class="empty-state small" id="detail-history-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4v16h16"/><path d="M8 15l3-3 3 2 4-5"/></svg>
+              <p>Платежей пока не было</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="detail-section-title">Клиенты</div>
-      <div id="detail-clients-list"></div>
-      <div class="empty-state small" id="detail-clients-empty">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
-        <p>Клиенты не привязаны</p>
+      <div class="detail-collapse-section" id="detail-clients-section">
+        <button type="button" class="detail-collapse-toggle" onclick="toggleDetailSection(this)">
+          <span class="detail-collapse-title">Клиенты <span class="detail-collapse-count" id="detail-clients-count">0</span></span>
+          <span class="detail-collapse-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="detail-collapse-body">
+          <div class="detail-collapse-body-inner">
+            <div id="detail-clients-list"></div>
+            <div class="empty-state small" id="detail-clients-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>
+              <p>Клиенты не привязаны</p>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <button class="btn-save" style="width:100%; margin-top:16px;" onclick="openPaymentModal()">Добавить платёж</button>
     </div>
   </div>
 
@@ -2051,6 +2433,7 @@
 <script>
   let currentScreen = 'home';
   let boxesData = [];
+  let temporaryBookings = [];
   let editingBoxIndex = null;
   let currentDetailIndex = null;
   let selectedPaymentType = 'За аренду';
@@ -2064,7 +2447,10 @@
   let remindersEnabled = false;
   let reminderTime = '10:00';
   let reminderTemplate = 'Здравствуйте, {имя}! Напоминаем, что {день} числа — день оплаты за бокс «{бокс}». Актуальный долг: {долг}. Спасибо, что вы с нами!';
-  let lastReminderDate = null;
+  let temporaryBoxesEnabled = false;
+  let lastReminderDate = (function(){
+    try{ return localStorage.getItem('murbox_last_reminder_date'); } catch(e){ return null; }
+  })();
 
   function formatMoney(value){
     const n = typeof value === 'number' ? value : (parseFloat(String(value).replace(/[^0-9.\-]/g, '')) || 0);
@@ -2087,11 +2473,15 @@
     document.getElementById('input-reminder-time').value = reminderTime;
     document.getElementById('input-reminder-text').value = reminderTemplate;
     updateReminderStatusBadge();
+    document.getElementById('input-temporary-enabled').checked = temporaryBoxesEnabled;
+    updateTemporaryStatusBadge();
     document.querySelectorAll('#settings-split-select .chip-option').forEach(el =>
       el.classList.toggle('active', el.dataset.value === defaultBoxSplit)
     );
     updateWhatsappStatusBadge();
     updateStorageInfo();
+    document.getElementById('input-restore-text').value = '';
+    cancelFullReset();
     document.querySelectorAll('#settings-modal .settings-section').forEach(s => s.classList.remove('open'));
     document.getElementById('settings-modal').classList.add('open');
   }
@@ -2111,6 +2501,12 @@
     const badge = document.getElementById('reminder-status-badge');
     badge.textContent = remindersEnabled ? 'вкл' : 'выкл';
     badge.classList.toggle('connected', remindersEnabled);
+  }
+
+  function updateTemporaryStatusBadge(){
+    const badge = document.getElementById('temporary-status-badge');
+    badge.textContent = temporaryBoxesEnabled ? 'вкл' : 'выкл';
+    badge.classList.toggle('connected', temporaryBoxesEnabled);
   }
 
   function updateCompanyNameDisplay(name){
@@ -2172,11 +2568,13 @@
       settings: {
         companyName, kwhPrice, showKopecks, defaultBoxSplit,
         greenApiIdInstance, greenApiToken, autoSendOnPayment,
-        remindersEnabled, reminderTime, reminderTemplate
+        remindersEnabled, reminderTime, reminderTemplate,
+        temporaryBoxesEnabled
       },
       boxesData,
       contactsData,
-      activityLog
+      activityLog,
+      temporaryBookings
     };
   }
 
@@ -2235,6 +2633,33 @@
     event.target.value = '';
   }
 
+  async function pasteFromClipboardToRestore(){
+    try{
+      const text = await navigator.clipboard.readText();
+      document.getElementById('input-restore-text').value = text;
+      showToast('Текст вставлен из буфера');
+    } catch(e){
+      showToast('Не удалось прочитать буфер обмена — вставьте текст вручную (Ctrl+V)');
+    }
+  }
+
+  function restoreFromText(){
+    const raw = document.getElementById('input-restore-text').value.trim();
+    if(!raw){
+      showToast('Сначала вставьте текст резервной копии');
+      return;
+    }
+    try{
+      const data = JSON.parse(raw);
+      applyBackupData(data);
+      document.getElementById('input-restore-text').value = '';
+      showToast('Данные восстановлены из текста');
+    } catch(e){
+      console.error(e);
+      showToast('Не удалось прочитать текст резервной копии');
+    }
+  }
+
   function assignStateFromBackup(data){
     const s = data.settings || {};
     companyName = s.companyName || companyName;
@@ -2247,10 +2672,12 @@
     remindersEnabled = !!s.remindersEnabled;
     reminderTime = s.reminderTime || '10:00';
     reminderTemplate = s.reminderTemplate || reminderTemplate;
+    temporaryBoxesEnabled = !!s.temporaryBoxesEnabled;
 
     boxesData = data.boxesData || [];
     contactsData = data.contactsData || [];
     activityLog = (data.activityLog || []).map(e => ({ ...e, date: new Date(e.date) }));
+    temporaryBookings = data.temporaryBookings || [];
   }
 
   function applyBackupData(data){
@@ -2262,13 +2689,95 @@
     renderReport();
     renderHistoryLog();
     renderUpcomingPayments();
+    renderTemporaryList();
     updateWhatsappStatusBadge();
     updateReminderStatusBadge();
+    updateTemporaryStatusBadge();
+    updateTemporaryNavVisibility();
     closeSettingsModal();
   }
 
   function closeSettingsModal(){
     document.getElementById('settings-modal').classList.remove('open');
+  }
+
+  /* ---------- FULL RESET (60s cooldown + second confirmation) ---------- */
+  let fullResetInterval = null;
+  let fullResetSecondsLeft = 60;
+
+  function startFullReset(){
+    document.getElementById('btn-full-reset').style.display = 'none';
+    document.getElementById('full-reset-timer').style.display = 'block';
+    fullResetSecondsLeft = 60;
+    updateFullResetTimerText();
+
+    const confirmBtn = document.getElementById('btn-full-reset-confirm');
+    confirmBtn.disabled = true;
+
+    fullResetInterval = setInterval(() => {
+      fullResetSecondsLeft--;
+      if(fullResetSecondsLeft <= 0){
+        clearInterval(fullResetInterval);
+        fullResetInterval = null;
+        confirmBtn.disabled = false;
+        document.getElementById('full-reset-timer-text').textContent = 'Можно подтвердить сброс. Это действие необратимо.';
+      } else {
+        updateFullResetTimerText();
+      }
+    }, 1000);
+  }
+
+  function updateFullResetTimerText(){
+    document.getElementById('full-reset-timer-text').textContent =
+      `Подтверждение станет доступно через ${fullResetSecondsLeft} сек — это время, чтобы передумать.`;
+  }
+
+  function cancelFullReset(){
+    if(fullResetInterval){ clearInterval(fullResetInterval); fullResetInterval = null; }
+    document.getElementById('btn-full-reset').style.display = 'block';
+    document.getElementById('full-reset-timer').style.display = 'none';
+    document.getElementById('btn-full-reset-confirm').disabled = true;
+  }
+
+  function confirmFullReset(){
+    if(document.getElementById('btn-full-reset-confirm').disabled) return;
+    performFullReset();
+  }
+
+  function performFullReset(){
+    boxesData = [];
+    contactsData = [];
+    activityLog = [];
+    temporaryBookings = [];
+
+    companyName = 'МурБокс';
+    kwhPrice = '';
+    showKopecks = false;
+    defaultBoxSplit = 'поровну';
+    greenApiIdInstance = '';
+    greenApiToken = '';
+    autoSendOnPayment = true;
+    remindersEnabled = false;
+    reminderTime = '10:00';
+    reminderTemplate = 'Здравствуйте, {имя}! Напоминаем, что {день} числа — день оплаты за бокс «{бокс}». Актуальный долг: {долг}. Спасибо, что вы с нами!';
+    temporaryBoxesEnabled = false;
+
+    cancelFullReset();
+    updateCompanyNameDisplay(companyName);
+    renderBoxes();
+    renderContacts();
+    renderReport();
+    renderHistoryLog();
+    renderUpcomingPayments();
+    renderTemporaryList();
+    updateWhatsappStatusBadge();
+    updateReminderStatusBadge();
+    updateTemporaryStatusBadge();
+    updateTemporaryNavVisibility();
+    updateStorageInfo();
+
+    closeSettingsModal();
+    showToast('Приложение полностью сброшено');
   }
 
   /* ---------- PWA: manifest, service worker, install prompt ---------- */
@@ -2358,6 +2867,7 @@
     const remindersOn = document.getElementById('input-reminders-enabled').checked;
     const remTime = document.getElementById('input-reminder-time').value || '10:00';
     const remText = document.getElementById('input-reminder-text').value.trim();
+    const temporaryOn = document.getElementById('input-temporary-enabled').checked;
 
     if(!name){
       document.getElementById('input-company-name').focus();
@@ -2374,8 +2884,11 @@
     remindersEnabled = remindersOn;
     reminderTime = remTime;
     reminderTemplate = remText || reminderTemplate;
+    temporaryBoxesEnabled = temporaryOn;
     updateWhatsappStatusBadge();
     updateReminderStatusBadge();
+    updateTemporaryStatusBadge();
+    updateTemporaryNavVisibility();
     setupManifest();
     updateCompanyNameDisplay(name);
 
@@ -2407,10 +2920,14 @@
       renderUpcomingPayments();
     }
 
+    if(name === 'temporary'){
+      renderTemporaryList();
+    }
+
     const addBtn = document.getElementById('btn-add');
-    if(name === 'boxes' || name === 'contacts'){
+    if(name === 'boxes' || name === 'contacts' || name === 'temporary'){
       addBtn.classList.remove('is-hidden');
-      addBtn.title = name === 'boxes' ? 'Добавить бокс' : 'Добавить контакт';
+      addBtn.title = name === 'boxes' ? 'Добавить бокс' : (name === 'contacts' ? 'Добавить контакт' : 'Добавить временную бронь');
     } else {
       addBtn.classList.add('is-hidden');
     }
@@ -2427,6 +2944,7 @@
   function handleAdd(){
     if(currentScreen === 'boxes') openBoxModal();
     if(currentScreen === 'contacts') openContactModal();
+    if(currentScreen === 'temporary') openTemporaryModal();
   }
 
   function getLightDebt(box){
@@ -2498,6 +3016,30 @@
     return Math.round((target - today) / 86400000);
   }
 
+  function getUpcomingFirstPayment(box){
+    if(!box.firstPaymentDate) return null;
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const first = new Date(box.firstPaymentDate + 'T00:00:00');
+    if(isNaN(first.getTime()) || first < today) return null;
+    return { date: first, days: Math.round((first - today) / 86400000) };
+  }
+
+  function daysUntilNextPaymentForBox(box){
+    const firstPayment = getUpcomingFirstPayment(box);
+    if(firstPayment) return firstPayment.days;
+    if(!box.payDay) return null;
+    return daysUntilNextPayday(parseInt(box.payDay));
+  }
+
+  function nextPaymentLabel(box){
+    const firstPayment = getUpcomingFirstPayment(box);
+    if(firstPayment){
+      return 'первый платёж ' + firstPayment.date.toLocaleDateString('ru-RU');
+    }
+    return box.payDay ? (box.payDay + ' числа') : '';
+  }
+
   function renderUpcomingPayments(){
     const listEl = document.getElementById('upcoming-list');
     if(!listEl) return;
@@ -2506,8 +3048,8 @@
     const buckets = { today: [], tomorrow: [], week: [], month: [] };
 
     boxesData.forEach(box => {
-      if(!box.payDay) return;
-      const days = daysUntilNextPayday(parseInt(box.payDay));
+      const days = daysUntilNextPaymentForBox(box);
+      if(days === null) return;
       if(days === 0) buckets.today.push(box);
       else if(days === 1) buckets.tomorrow.push(box);
       else if(days <= 7) buckets.week.push(box);
@@ -2540,7 +3082,7 @@
         row.innerHTML = `
           <div>
             <div class="up-name">${box.name}</div>
-            <div class="up-day">${box.payDay} числа · ${box.price ? box.price : '—'}</div>
+            <div class="up-day">${nextPaymentLabel(box)} · ${box.price ? box.price : '—'}</div>
           </div>
           <div class="up-badge">${formatMoney(boxTotalDebt(box))}</div>
         `;
@@ -2595,18 +3137,34 @@
       const card = document.createElement('div');
       card.className = 'box-card just-added';
       card.onclick = () => openBoxDetail(i);
+
+      const rentDebt = box.debtRent || 0;
+      const lightDebt = getLightDebt(box);
+      const rentLabel = rentDebt < 0 ? 'Переплата' : 'Долг за аренду';
+      const lightLabel = lightDebt < 0 ? 'Переплата' : 'Долг за свет';
+
       card.innerHTML = `
         <div class="thumb">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8"/><path d="M12 12v8"/></svg>
         </div>
         <div class="body">
-          <h4>${box.name}</h4>
-          <div class="foot">
-            <div class="price">${box.price ? box.price : '—'} / ${box.period === 'день' ? 'сутки' : 'мес.'}</div>
-            ${boxTotalDebt(box) > 0 ? `<span class="debt-pill">Долг ${formatMoney(boxTotalDebt(box))}</span>` : ''}
-            ${boxTotalDebt(box) < 0 ? `<span class="debt-pill credit">Переплата ${formatMoney(Math.abs(boxTotalDebt(box)))}</span>` : ''}
+          <div class="box-card-top">
+            <h4>${box.name}</h4>
+            <div class="box-card-price">${box.price ? box.price : '—'} / ${box.period === 'день' ? 'сутки' : 'мес.'}</div>
           </div>
-          ${box.payDay ? `<div class="dims">Оплата — ${box.payDay} числа</div>` : ''}
+          ${box.isTemporary ? `<span class="tag-free">Временный</span>` : ''}
+          <div class="box-card-debts">
+            <div class="box-card-debt-item">
+              <span class="box-card-debt-label">${rentLabel}</span>
+              <span class="box-card-debt-value ${rentDebt > 0 ? 'due' : ''}">${formatMoney(Math.abs(rentDebt))}</span>
+            </div>
+            <div class="box-card-debt-divider"></div>
+            <div class="box-card-debt-item">
+              <span class="box-card-debt-label">${lightLabel}</span>
+              <span class="box-card-debt-value ${lightDebt > 0 ? 'due' : ''}">${formatMoney(Math.abs(lightDebt))}</span>
+            </div>
+          </div>
+          ${getUpcomingFirstPayment(box) ? `<div class="dims">Первый платёж — ${getUpcomingFirstPayment(box).date.toLocaleDateString('ru-RU')}, дальше по графику</div>` : (box.payDay ? `<div class="dims">Оплата — ${box.payDay} числа</div>` : '')}
           ${box.desc ? `<div class="desc-line">${box.desc}</div>` : ''}
         </div>`;
       list.appendChild(card);
@@ -2634,8 +3192,11 @@
     document.getElementById('input-box-price').value = '';
     document.getElementById('input-box-period').value = 'месяц';
     document.getElementById('input-box-payday').value = '';
+    document.getElementById('input-box-first-payment').value = '';
     document.getElementById('input-box-meter').value = '';
     document.getElementById('input-box-desc').value = '';
+    document.getElementById('field-box-temporary').style.display = temporaryBoxesEnabled ? 'block' : 'none';
+    document.getElementById('input-box-temporary').checked = false;
     setBoxSplitUI(defaultBoxSplit);
     document.getElementById('btn-delete-box').style.display = 'none';
     document.getElementById('box-modal').classList.add('open');
@@ -2649,8 +3210,11 @@
     document.getElementById('input-box-price').value = box.price;
     document.getElementById('input-box-period').value = box.period;
     document.getElementById('input-box-payday').value = box.payDay || '';
+    document.getElementById('input-box-first-payment').value = box.firstPaymentDate || '';
     document.getElementById('input-box-meter').value = box.meterStart || '';
     document.getElementById('input-box-desc').value = box.desc;
+    document.getElementById('field-box-temporary').style.display = temporaryBoxesEnabled ? 'block' : 'none';
+    document.getElementById('input-box-temporary').checked = !!box.isTemporary;
     setBoxSplitUI(box.paymentSplit || 'поровну');
     document.getElementById('btn-delete-box').style.display = 'flex';
     closeBoxDetailModal();
@@ -2666,8 +3230,10 @@
     const price = document.getElementById('input-box-price').value.trim();
     const period = document.getElementById('input-box-period').value;
     const payDay = document.getElementById('input-box-payday').value.trim();
+    const firstPaymentDate = document.getElementById('input-box-first-payment').value;
     const meterRaw = document.getElementById('input-box-meter').value.trim();
     const desc = document.getElementById('input-box-desc').value.trim();
+    const isTemporary = temporaryBoxesEnabled ? document.getElementById('input-box-temporary').checked : undefined;
 
     if(!name){
       document.getElementById('input-box-name').focus();
@@ -2680,6 +3246,8 @@
     if(editingBoxIndex !== null){
       const box = boxesData[editingBoxIndex];
       box.name = name; box.price = price; box.period = period; box.payDay = payDay; box.desc = desc;
+      box.firstPaymentDate = firstPaymentDate;
+      if(isTemporary !== undefined) box.isTemporary = isTemporary;
       box.meterStart = meterStart;
       box.paymentSplit = selectedBoxSplit;
       if(box.meterCurrent === undefined || box.meterCurrent === null){
@@ -2687,7 +3255,8 @@
       }
     } else {
       boxesData.push({
-        name, price, period, payDay, desc,
+        name, price, period, payDay, desc, firstPaymentDate,
+        isTemporary: !!isTemporary,
         debtRent:0, payments:[], clients:[],
         meterStart: meterStart, meterCurrent: meterStart,
         paymentSplit: selectedBoxSplit
@@ -2727,6 +3296,229 @@
     renderContacts();
     renderReport();
     showToast('Бокс удалён');
+  }
+
+  /* ---------- TEMPORARY BOOKINGS ---------- */
+  let editingTemporaryIndex = null;
+  let selectedTempStatus = 'бронь';
+  let selectedTempDuration = 'часы';
+
+  function updateTemporaryNavVisibility(){
+    const navBtn = document.getElementById('nav-temporary');
+    if(temporaryBoxesEnabled){
+      navBtn.classList.remove('is-hidden');
+    } else {
+      navBtn.classList.add('is-hidden');
+      if(currentScreen === 'temporary') showScreen('home');
+    }
+  }
+
+  function selectTempStatus(el){
+    document.querySelectorAll('#temp-status-select .chip-option').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    selectedTempStatus = el.dataset.value;
+  }
+
+  function selectTempDuration(el){
+    document.querySelectorAll('#temp-duration-select .chip-option').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    selectedTempDuration = el.dataset.value;
+    const suffix = document.getElementById('temp-duration-suffix');
+    if(suffix) suffix.textContent = selectedTempDuration === 'сутки' ? 'сут.' : 'ч.';
+  }
+
+  function tempStatusLabel(status){
+    return status === 'активен' ? 'Активен' : 'Бронь';
+  }
+
+  function openTemporaryModal(){
+    editingTemporaryIndex = null;
+    document.getElementById('temporary-modal-title').textContent = 'Временная бронь';
+    document.getElementById('btn-save-temporary').textContent = 'Добавить';
+    document.getElementById('input-temp-name').value = '';
+    document.getElementById('input-temp-phone').value = '';
+    selectTempDuration(document.querySelector('#temp-duration-select .chip-option[data-value="часы"]'));
+    document.getElementById('input-temp-duration-value').value = '';
+    const now = new Date();
+    document.getElementById('input-temp-start-date').value = localDateStr(now);
+    document.getElementById('input-temp-start-time').value =
+      String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    selectTempStatus(document.querySelector('#temp-status-select .chip-option[data-value="бронь"]'));
+    document.getElementById('btn-delete-temporary').style.display = 'none';
+    document.getElementById('temporary-modal').classList.add('open');
+  }
+
+  function openEditTemporary(index){
+    editingTemporaryIndex = index;
+    const b = temporaryBookings[index];
+    document.getElementById('temporary-modal-title').textContent = 'Изменить бронь';
+    document.getElementById('btn-save-temporary').textContent = 'Сохранить';
+    document.getElementById('input-temp-name').value = b.name;
+    document.getElementById('input-temp-phone').value = b.phone || '';
+    selectTempDuration(document.querySelector(`#temp-duration-select .chip-option[data-value="${b.durationType || 'часы'}"]`));
+    document.getElementById('input-temp-duration-value').value = b.durationValue || '';
+    document.getElementById('input-temp-start-date').value = b.startDate || '';
+    document.getElementById('input-temp-start-time').value = b.startTime || '';
+    selectTempStatus(document.querySelector(`#temp-status-select .chip-option[data-value="${b.status || 'бронь'}"]`));
+    document.getElementById('btn-delete-temporary').style.display = 'flex';
+    document.getElementById('temporary-modal').classList.add('open');
+  }
+
+  function closeTemporaryModal(){
+    document.getElementById('temporary-modal').classList.remove('open');
+  }
+
+  function saveTemporaryBooking(){
+    const name = document.getElementById('input-temp-name').value.trim();
+    const phone = document.getElementById('input-temp-phone').value.trim();
+    const durationValue = document.getElementById('input-temp-duration-value').value.trim();
+    const startDate = document.getElementById('input-temp-start-date').value;
+    const startTime = document.getElementById('input-temp-start-time').value;
+
+    if(!name){
+      document.getElementById('input-temp-name').focus();
+      return;
+    }
+
+    const isNew = editingTemporaryIndex === null;
+    const booking = { name, phone, durationType: selectedTempDuration, durationValue, startDate, startTime, status: selectedTempStatus };
+
+    if(isNew){
+      temporaryBookings.push(booking);
+    } else {
+      temporaryBookings[editingTemporaryIndex] = booking;
+    }
+
+    logActivity(isNew ? `Добавлена временная бронь «${name}»` : `Изменена временная бронь «${name}»`);
+
+    editingTemporaryIndex = null;
+    closeTemporaryModal();
+    renderTemporaryList();
+    renderReport();
+  }
+
+  function deleteTemporaryBooking(){
+    if(editingTemporaryIndex === null) return;
+    const b = temporaryBookings[editingTemporaryIndex];
+    if(!b) return;
+
+    const ok = confirm(`Удалить временную бронь «${b.name}»? Это действие нельзя отменить.`);
+    if(!ok) return;
+
+    temporaryBookings.splice(editingTemporaryIndex, 1);
+    logActivity(`Удалена временная бронь «${b.name}»`);
+
+    editingTemporaryIndex = null;
+    closeTemporaryModal();
+    renderTemporaryList();
+    renderReport();
+    showToast('Бронь удалена');
+  }
+
+  function renderTemporaryList(){
+    const list = document.getElementById('temporary-list');
+    const emptyEl = document.getElementById('temporary-empty');
+    if(!list || !emptyEl) return;
+    list.innerHTML = '';
+
+    temporaryBookings.forEach((b, i) => {
+      const card = document.createElement('div');
+      card.className = 'box-card just-added';
+      card.id = 'temp-card-' + i;
+      card.onclick = () => toggleTempCardExpand(i);
+      const statusClass = b.status === 'активен' ? 'connected' : '';
+      card.innerHTML = `
+        <div class="thumb">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <div class="body">
+          <h4>${b.name}</h4>
+          <div class="foot">
+            <div class="price">${b.durationValue ? b.durationValue + ' ' + (b.durationType === 'сутки' ? 'сут.' : 'ч.') : (b.durationType === 'сутки' ? 'Сутки' : 'Часы')}</div>
+            <span class="wa-status ${statusClass}">${tempStatusLabel(b.status)}</span>
+          </div>
+          ${b.phone ? `<div class="dims">${b.phone}</div>` : ''}
+          ${(b.startDate || b.startTime) ? `<div class="dims">Начало — ${b.startDate ? new Date(b.startDate + 'T00:00:00').toLocaleDateString('ru-RU') : ''}${b.startTime ? ', ' + b.startTime : ''}</div>` : ''}
+          <div class="temp-timer" id="temp-timer-${i}"></div>
+          <div class="temp-card-expand">
+            <div class="temp-card-expand-inner">
+              <span class="wa-status ${b.status === 'активен' ? 'connected' : ''}">${b.status === 'активен' ? 'Открыт' : 'Бронь'}</span>
+              <button type="button" class="btn-ghost" onclick="event.stopPropagation(); openEditTemporary(${i})">Продлить</button>
+              <button type="button" class="btn-ghost" onclick="event.stopPropagation(); openTempPaymentModal(${i})">Оплатить</button>
+            </div>
+          </div>
+        </div>`;
+      list.appendChild(card);
+    });
+
+    emptyEl.style.display = temporaryBookings.length ? 'none' : 'block';
+    updateTemporaryTimers();
+  }
+
+  function toggleTempCardExpand(index){
+    const card = document.getElementById('temp-card-' + index);
+    if(!card) return;
+    card.classList.toggle('expanded');
+  }
+
+  function formatElapsedTime(ms){
+    const isFuture = ms < 0;
+    const abs = Math.abs(ms);
+    const totalSeconds = Math.floor(abs / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const pad = n => String(n).padStart(2, '0');
+    const text = `${days}д ${pad(hours)}ч ${pad(minutes)}м ${pad(seconds)}с`;
+    return isFuture ? `Начнётся через ${text}` : `В аренде: ${text}`;
+  }
+
+  function updateTemporaryTimers(){
+    if(currentScreen !== 'temporary') return;
+    const now = new Date();
+    temporaryBookings.forEach((b, i) => {
+      const el = document.getElementById('temp-timer-' + i);
+      if(!el) return;
+      if(!b.startDate){ el.textContent = ''; return; }
+      const start = new Date(b.startDate + 'T' + (b.startTime || '00:00') + ':00');
+      if(isNaN(start.getTime())){ el.textContent = ''; return; }
+      el.textContent = formatElapsedTime(now - start);
+    });
+  }
+
+  setInterval(updateTemporaryTimers, 1000);
+
+  let tempPaymentIndex = null;
+
+  function openTempPaymentModal(index){
+    tempPaymentIndex = index;
+    const b = temporaryBookings[index];
+    document.getElementById('temp-payment-name').textContent = b.name;
+    document.getElementById('input-temp-payment-amount').value = '';
+    document.getElementById('temporary-payment-modal').classList.add('open');
+  }
+
+  function closeTempPaymentModal(){
+    document.getElementById('temporary-payment-modal').classList.remove('open');
+  }
+
+  function saveTempPayment(){
+    const raw = document.getElementById('input-temp-payment-amount').value.trim();
+    if(!raw){
+      document.getElementById('input-temp-payment-amount').focus();
+      return;
+    }
+    const b = temporaryBookings[tempPaymentIndex];
+    if(!b) return;
+    const amountNum = parseFloat(raw.replace(/[^0-9.]/g, '')) || 0;
+    b.payments = b.payments || [];
+    b.payments.push({ amount: raw, date: new Date().toLocaleDateString('ru-RU') });
+    logActivity(`Оплата временной брони «${b.name}»`, amountNum);
+    closeTempPaymentModal();
+    renderTemporaryList();
+    renderReport();
+    showToast('Оплата записана');
   }
 
   /* ---------- METER READING ---------- */
@@ -2780,7 +3572,11 @@
     renderClients(box);
 
     const paydayEl = document.getElementById('detail-payday');
-    if(box.payDay){
+    const upcomingFirst = getUpcomingFirstPayment(box);
+    if(upcomingFirst){
+      paydayEl.style.display = 'flex';
+      paydayEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Первый платёж — ${upcomingFirst.date.toLocaleDateString('ru-RU')} (индивидуально)${box.payDay ? `, затем — ${box.payDay} числа каждого месяца` : ''}`;
+    } else if(box.payDay){
       paydayEl.style.display = 'flex';
       paydayEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>Оплата — ${box.payDay} числа каждого месяца`;
     } else {
@@ -2804,6 +3600,7 @@
       splitEl.style.display = 'none';
     }
 
+    document.querySelectorAll('#box-detail-modal .detail-collapse-section').forEach(s => s.classList.remove('open'));
     document.getElementById('box-detail-modal').classList.add('open');
   }
 
@@ -2836,6 +3633,10 @@
     document.getElementById('detail-paid').textContent = formatMoney(total);
   }
 
+  function toggleDetailSection(btn){
+    btn.closest('.detail-collapse-section').classList.toggle('open');
+  }
+
   function renderHistory(box){
     const listEl = document.getElementById('detail-history-list');
     listEl.innerHTML = '';
@@ -2851,6 +3652,7 @@
       listEl.appendChild(row);
     });
     document.getElementById('detail-history-empty').style.display = (box.payments && box.payments.length) ? 'none' : 'block';
+    document.getElementById('detail-history-count').textContent = (box.payments || []).length;
   }
 
   function renderClients(box){
@@ -2863,6 +3665,7 @@
       listEl.appendChild(row);
     });
     document.getElementById('detail-clients-empty').style.display = (box.clients && box.clients.length) ? 'none' : 'block';
+    document.getElementById('detail-clients-count').textContent = (box.clients || []).length;
   }
 
   /* ---------- CLIENT SELECT (link contacts to box, multi-select) ---------- */
@@ -3007,7 +3810,7 @@
     renderBoxes();
     renderReport();
     logActivity(`Платёж «${selectedPaymentType}» — бокс «${box.name}»`, amountNum);
-    notifyClientsAfterPayment(box);
+    notifyClientsAfterPayment(box, { type: selectedPaymentType, amount: amountNum });
   }
 
   /* ---------- SEARCH ---------- */
@@ -3311,7 +4114,7 @@
 
     if(contactAmountMode === 'payment' && autoSendOnPayment && greenApiIdInstance && greenApiToken && contact.phone){
       showToast(`Отправка PDF-отчёта: ${contact.fio}`);
-      sendReportToContact(contact).then(result => {
+      sendReportToContact(contact, { type: 'За ' + categoryLabel, amount: amountNum }).then(result => {
         showToast(result.ok ? `PDF-отчёт отправлен: ${contact.fio}` : 'Не удалось отправить PDF-отчёт');
       });
     }
@@ -3564,7 +4367,7 @@
     return doc.output('blob');
   }
 
-  async function sendReportToContact(contact){
+  async function sendReportToContact(contact, paymentInfo){
     if(!greenApiIdInstance || !greenApiToken){
       return { ok:false, reason:'not-connected' };
     }
@@ -3577,10 +4380,14 @@
       const phoneDigits = contact.phone.replace(/\D/g, '');
       const chatId = phoneDigits + '@c.us';
 
+      const caption = paymentInfo
+        ? `Платёж принят: «${paymentInfo.type}» — ${formatMoney(paymentInfo.amount)}. Актуальный статус — во вложении.`
+        : `Отчёт по оплатам — ${contact.fio}`;
+
       const formData = new FormData();
       formData.append('chatId', chatId);
       formData.append('file', blob, `Отчёт ${contact.fio}.pdf`);
-      formData.append('caption', `Отчёт по оплатам — ${contact.fio}`);
+      formData.append('caption', caption);
 
       const url = `https://api.green-api.com/waInstance${greenApiIdInstance}/sendFileByUpload/${greenApiToken}`;
       const resp = await fetch(url, { method: 'POST', body: formData });
@@ -3626,6 +4433,13 @@
     }
   }
 
+  function localDateStr(date){
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
   function checkReminders(force){
     if(!remindersEnabled && !force) return;
     if(!greenApiIdInstance || !greenApiToken){
@@ -3635,11 +4449,16 @@
 
     const now = new Date();
     const currentHHMM = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-    const todayStr = now.toISOString().slice(0, 10);
+    const todayStr = localDateStr(now);
 
     if(!force){
-      if(currentHHMM !== reminderTime) return;
+      // Уже отправляли сегодня — не повторяем.
       if(lastReminderDate === todayStr) return;
+      // ">=" вместо "===" — если вкладка была неактивна и точную минуту
+      // пропустили (браузер придерживает таймеры в фоне), напоминание всё
+      // равно уйдёт, как только приложение снова проверит время сегодня,
+      // а не будет молча пропущено до следующего дня.
+      if(currentHHMM < (reminderTime || '00:00')) return;
     }
 
     const todayDay = now.getDate();
@@ -3655,7 +4474,10 @@
       }
     });
 
-    if(!force) lastReminderDate = todayStr;
+    if(!force){
+      lastReminderDate = todayStr;
+      try{ localStorage.setItem('murbox_last_reminder_date', todayStr); } catch(e){}
+    }
 
     if(!targets.length){
       if(force) showToast('Сегодня нет боксов с датой оплаты');
@@ -3671,6 +4493,11 @@
   }
 
   setInterval(() => checkReminders(false), 60000);
+  // Проверяем при возврате во вкладку — это ловит случаи, когда браузер
+  // приостанавливал таймеры в фоне и точная минута была пропущена.
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'visible') checkReminders(false);
+  });
 
   async function sendWhatsappReport(){
     const contact = contactsData[currentContactDetailIndex];
@@ -3697,7 +4524,7 @@
   }
 
   /* ---------- AUTO-SEND PDF AFTER PAYMENT ---------- */
-  async function notifyClientsAfterPayment(box){
+  async function notifyClientsAfterPayment(box, paymentInfo){
     if(!autoSendOnPayment || !greenApiIdInstance || !greenApiToken) return;
 
     const clients = (box.clients || [])
@@ -3708,7 +4535,7 @@
 
     showToast(clients.length > 1 ? 'Отправка PDF-отчётов клиентам...' : `Отправка PDF-отчёта: ${clients[0].fio}`);
 
-    const results = await Promise.all(clients.map(c => sendReportToContact(c)));
+    const results = await Promise.all(clients.map(c => sendReportToContact(c, paymentInfo)));
     const successCount = results.filter(r => r.ok).length;
 
     if(successCount === clients.length){
@@ -3724,8 +4551,11 @@
   renderBoxes();
   renderContacts();
   renderReport();
+  renderTemporaryList();
+  updateTemporaryNavVisibility();
   setupManifest();
   setupServiceWorker();
+  checkReminders(false);
 </script>
 
 </body>

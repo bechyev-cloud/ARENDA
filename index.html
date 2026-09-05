@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>МурБокс</title>
 <meta name="theme-color" content="#C08F4C">
 <meta name="mobile-web-app-capable" content="yes">
@@ -30,17 +30,25 @@
     --shadow: rgba(80, 62, 34, 0.10);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
-  html, body{ height:100%; }
+  html, body{
+    height:100%;
+    overflow:hidden;
+    overscroll-behavior:none;
+    -webkit-tap-highlight-color: transparent;
+  }
   body{
     background: var(--cream);
     font-family:'Manrope', sans-serif;
+    position:fixed;
+    inset:0;
+    touch-action:pan-x pan-y;
   }
 
   .phone{
     width:100%;
     max-width:480px;
-    min-height:100vh;
-    height:100%;
+    height:100vh;
+    height:100dvh;
     margin:0 auto;
     background: var(--paper);
     position:relative;
@@ -48,6 +56,7 @@
     display:flex;
     flex-direction:column;
     box-shadow: 0 0 0 rgba(0,0,0,0);
+    overscroll-behavior:none;
   }
 
   @media (min-width: 620px){
@@ -151,6 +160,8 @@
     overflow-y:auto;
     -ms-overflow-style:none;
     scrollbar-width:none;
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
   }
   .screens::-webkit-scrollbar{ display:none; }
 
@@ -532,6 +543,11 @@
     animation: slideup .25s ease;
     box-shadow: 0 -20px 50px -20px rgba(55,43,30,0.3);
     position:relative;
+    max-height:88vh;
+    max-height:88dvh;
+    overflow-y:auto;
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
   }
   .btn-close-icon{
     position:absolute;
@@ -586,6 +602,90 @@
   }
   .field input:focus, .field textarea:focus{ border-color: var(--gold); }
   .field textarea{ resize:none; height:64px; }
+
+  /* ---- Settings: elegant sectioned layout ---- */
+  .settings-sheet{ padding-top:18px; }
+  .settings-head{ margin-bottom:16px; }
+  .settings-head h3{ margin-bottom:4px; }
+  .settings-subtitle{
+    font-size:12.5px;
+    color: var(--ink-soft);
+    line-height:1.5;
+  }
+  .storage-banner{
+    display:flex;
+    align-items:flex-start;
+    gap:11px;
+    background: linear-gradient(135deg, rgba(138,149,117,0.14), rgba(138,149,117,0.04));
+    border:1px solid rgba(138,149,117,0.32);
+    border-radius:16px;
+    padding: 13px 14px;
+    margin-bottom:18px;
+  }
+  .storage-banner svg{ width:19px; height:19px; stroke: var(--sage-deep); flex-shrink:0; margin-top:1px; }
+  .storage-banner-text strong{
+    display:block;
+    font-family:'Unbounded', sans-serif;
+    font-size:12.5px;
+    font-weight:600;
+    color: var(--ink);
+    margin-bottom:2px;
+  }
+  .storage-banner-text span{ font-size:11.5px; color: var(--ink-soft); line-height:1.5; }
+
+  .settings-section{
+    background: var(--white);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding: 18px 16px 6px;
+    margin-bottom:16px;
+    box-shadow: 0 10px 24px -18px rgba(55,43,30,0.25);
+  }
+  .settings-section-head{
+    display:flex;
+    align-items:flex-start;
+    gap:11px;
+    margin-bottom:16px;
+  }
+  .settings-section-icon{
+    width:36px; height:36px;
+    border-radius:12px;
+    background: var(--cream);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+  .settings-section-icon svg{ width:17px; height:17px; stroke: var(--gold-deep); }
+  .settings-section-icon--sage{ background:#EEF1E7; border-color:rgba(138,149,117,0.35); }
+  .settings-section-icon--sage svg{ stroke: var(--sage-deep); }
+  .settings-section-head h4{
+    font-family:'Unbounded', sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    color: var(--ink);
+    line-height:1.4;
+    margin-bottom:3px;
+  }
+  .settings-section-head p{
+    font-size:11.5px;
+    color: var(--ink-soft);
+    line-height:1.5;
+    max-width:290px;
+  }
+  .backup-actions{ display:flex; flex-direction:column; gap:8px; }
+  .backup-actions .btn-ghost{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding: 11px 14px;
+    box-sizing:border-box;
+    text-align:center;
+  }
+  .backup-actions .btn-ghost svg{ width:15px; height:15px; stroke: var(--ink-soft); flex-shrink:0; }
   .price-row{
     display:flex;
     gap:8px;
@@ -707,7 +807,7 @@
   }
 
   /* ---- BOX DETAIL ---- */
-  .detail-sheet{ max-height: 84vh; overflow-y:auto; }
+  .detail-sheet{ max-height: 84vh; overflow-y:auto; overscroll-behavior-y:contain; -webkit-overflow-scrolling:touch; }
   .detail-top{
     display:flex;
     align-items:center;
@@ -1413,95 +1513,165 @@
 
   <!-- SETTINGS MODAL -->
   <div class="modal-overlay" id="settings-modal">
-    <div class="modal-sheet">
+    <div class="modal-sheet settings-sheet">
       <div class="modal-handle"></div>
       <div class="btn-close-icon" onclick="closeSettingsModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </div>
-      <h3>Настройки</h3>
 
-      <div class="field">
-        <label>Название компании</label>
-        <input type="text" id="input-company-name" placeholder="МурБокс">
+      <div class="settings-head">
+        <h3>Настройки</h3>
+        <p class="settings-subtitle">Компания, тарифы, WhatsApp и хранение данных</p>
       </div>
 
-      <div class="field">
-        <label>Цена за электричество</label>
-        <div class="unit-input-row">
-          <input type="number" id="input-kwh-price" placeholder="8" min="0" step="0.1">
-          <div class="unit-suffix">₽ / кВт·ч</div>
+      <div class="storage-banner">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 3.8 8.6 9 10 5.2-1.4 9-5 9-10V6l-9-4Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <div class="storage-banner-text">
+          <strong>Данные хранятся на этом устройстве</strong>
+          <span id="storage-banner-detail">Всё сохраняется прямо в этом браузере — ничего не отправляется на сервер</span>
         </div>
       </div>
 
-      <div class="field">
-        <label>Показывать копейки</label>
-        <div class="toggle-row">
-          <span class="toggle-desc">Суммы будут отображаться с копейками, например 150.50 ₽</span>
-          <label class="switch">
-            <input type="checkbox" id="input-show-kopecks">
-            <span class="slider"></span>
+      <div class="settings-section">
+        <div class="settings-section-head">
+          <span class="settings-section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg>
+          </span>
+          <div>
+            <h4>Компания</h4>
+            <p>Название появится на главном экране и в PDF-отчётах клиентам</p>
+          </div>
+        </div>
+        <div class="field">
+          <label>Название компании</label>
+          <input type="text" id="input-company-name" placeholder="МурБокс">
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-head">
+          <span class="settings-section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </span>
+          <div>
+            <h4>Тарифы и отображение</h4>
+            <p>Влияет на расчёт счёта за свет и формат сумм в приложении</p>
+          </div>
+        </div>
+        <div class="field">
+          <label>Цена за электричество</label>
+          <div class="unit-input-row">
+            <input type="number" id="input-kwh-price" placeholder="8" min="0" step="0.1">
+            <div class="unit-suffix">₽ / кВт·ч</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Показывать копейки</label>
+          <div class="toggle-row">
+            <span class="toggle-desc">Суммы будут отображаться с копейками, например 150.50 ₽</span>
+            <label class="switch">
+              <input type="checkbox" id="input-show-kopecks">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Оплата клиентами по умолчанию</label>
+          <div class="chip-select" id="settings-split-select">
+            <div class="chip-option active" data-value="поровну" onclick="selectSettingsSplit(this)">Поровну между клиентами</div>
+            <div class="chip-option" data-value="полностью" onclick="selectSettingsSplit(this)">Каждый платит полностью</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-head">
+          <span class="settings-section-icon settings-section-icon--sage">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.4 8.5 8.5 0 0 1-4-1L3 20l1.1-5.4a8.38 8.38 0 0 1-1-4A8.4 8.4 0 0 1 11.5 2 8.5 8.5 0 0 1 21 11.5Z"/></svg>
+          </span>
+          <div>
+            <h4>WhatsApp и автоматизация <span id="whatsapp-status-badge" class="wa-status">не подключён</span></h4>
+            <p>Отправка PDF-отчётов и напоминаний клиентам напрямую в WhatsApp</p>
+          </div>
+        </div>
+        <div class="field">
+          <label>ID Instance</label>
+          <input type="text" id="input-green-id" placeholder="ID Instance">
+        </div>
+        <div class="field">
+          <label>API Token</label>
+          <input type="text" id="input-green-token" placeholder="API Token">
+          <div class="meter-hint">Данные можно получить в личном кабинете на <a href="https://green-api.com" target="_blank" style="color:var(--gold-deep); font-weight:700;">green-api.com</a>. После подключения в карточке контакта появится кнопка отправки PDF-отчёта.</div>
+        </div>
+        <div class="field">
+          <label>Автоотправка при оплате</label>
+          <div class="toggle-row">
+            <span class="toggle-desc">После записи платежа клиенту с указанным телефоном автоматически придёт PDF-отчёт</span>
+            <label class="switch">
+              <input type="checkbox" id="input-auto-send">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-head">
+          <span class="settings-section-icon settings-section-icon--sage">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          </span>
+          <div>
+            <h4>Напоминания о платежах <span id="reminder-status-badge" class="wa-status">выкл</span></h4>
+            <p>В день оплаты бокса клиенту придёт текстовое напоминание в WhatsApp</p>
+          </div>
+        </div>
+        <div class="field">
+          <label>Включить напоминания</label>
+          <div class="toggle-row">
+            <span class="toggle-desc">Проверка идёт автоматически каждую минуту, пока приложение открыто</span>
+            <label class="switch">
+              <input type="checkbox" id="input-reminders-enabled">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Время отправки</label>
+          <input type="time" id="input-reminder-time">
+        </div>
+        <div class="field">
+          <label>Текст напоминания</label>
+          <textarea id="input-reminder-text" style="height:90px;" placeholder="Текст сообщения"></textarea>
+          <div class="meter-hint">Можно использовать: {имя}, {бокс}, {день}, {долг}</div>
+        </div>
+        <button type="button" class="btn-ghost" style="width:100%; margin-bottom:4px;" onclick="checkReminders(true)">Проверить и отправить сейчас</button>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-head">
+          <span class="settings-section-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          </span>
+          <div>
+            <h4>Резервные копии</h4>
+            <p>На случай смены устройства или очистки браузера — данные из настроек выше не покидают это устройство сами по себе</p>
+          </div>
+        </div>
+        <div class="field backup-actions">
+          <button type="button" class="btn-ghost" onclick="downloadBackup()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+            Скачать файл копии
+          </button>
+          <button type="button" class="btn-ghost" onclick="copyBackupToClipboard()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Скопировать в буфер
+          </button>
+          <label class="btn-ghost" style="cursor:pointer;">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
+            Восстановить из файла
+            <input type="file" id="input-restore-file" accept="application/json" style="display:none;" onchange="restoreFromFile(event)">
           </label>
         </div>
-      </div>
-
-      <div class="field">
-        <label>Оплата клиентами по умолчанию</label>
-        <div class="chip-select" id="settings-split-select">
-          <div class="chip-option active" data-value="поровну" onclick="selectSettingsSplit(this)">Поровну между клиентами</div>
-          <div class="chip-option" data-value="полностью" onclick="selectSettingsSplit(this)">Каждый платит полностью</div>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>WhatsApp (Green API) <span id="whatsapp-status-badge" class="wa-status">не подключён</span></label>
-        <input type="text" id="input-green-id" placeholder="ID Instance" style="margin-bottom:8px;">
-        <input type="text" id="input-green-token" placeholder="API Token">
-        <div class="meter-hint">Данные можно получить в личном кабинете на <a href="https://green-api.com" target="_blank" style="color:var(--gold-deep); font-weight:700;">green-api.com</a>. После подключения в карточке контакта появится кнопка отправки PDF-отчёта в WhatsApp.</div>
-      </div>
-
-      <div class="field">
-        <label>Автоотправка при оплате</label>
-        <div class="toggle-row">
-          <span class="toggle-desc">После записи платежа клиенту с указанным телефоном автоматически придёт PDF-отчёт в WhatsApp</span>
-          <label class="switch">
-            <input type="checkbox" id="input-auto-send">
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Напоминание о дне оплаты <span id="reminder-status-badge" class="wa-status">выкл</span></label>
-        <div class="toggle-row">
-          <span class="toggle-desc">В день оплаты бокса клиенту автоматически придёт текстовое напоминание в WhatsApp</span>
-          <label class="switch">
-            <input type="checkbox" id="input-reminders-enabled">
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Время отправки</label>
-        <input type="time" id="input-reminder-time">
-      </div>
-
-      <div class="field">
-        <label>Текст напоминания</label>
-        <textarea id="input-reminder-text" style="height:90px;" placeholder="Текст сообщения"></textarea>
-        <div class="meter-hint">Можно использовать: {имя}, {бокс}, {день}, {долг}</div>
-      </div>
-
-      <button type="button" class="btn-ghost" style="width:100%; margin-bottom:8px;" onclick="checkReminders(true)">Проверить и отправить сейчас</button>
-
-      <div class="field">
-        <label>Резервная копия</label>
-        <button type="button" class="btn-ghost" style="width:100%; margin-bottom:8px;" onclick="downloadBackup()">Скачать полную копию (файл)</button>
-        <button type="button" class="btn-ghost" style="width:100%; margin-bottom:8px;" onclick="copyBackupToClipboard()">Скопировать в буфер обмена (текст)</button>
-        <label class="btn-ghost" style="width:100%; display:block; text-align:center; box-sizing:border-box; cursor:pointer;">
-          Восстановить из файла
-          <input type="file" id="input-restore-file" accept="application/json" style="display:none;" onchange="restoreFromFile(event)">
-        </label>
         <div class="meter-hint">Копия включает боксы, контакты, настройки и историю операций.</div>
       </div>
 
@@ -1835,6 +2005,7 @@
       el.classList.toggle('active', el.dataset.value === defaultBoxSplit)
     );
     updateWhatsappStatusBadge();
+    updateStorageInfo();
     document.getElementById('settings-modal').classList.add('open');
   }
 
@@ -1849,6 +2020,57 @@
     const badge = document.getElementById('reminder-status-badge');
     badge.textContent = remindersEnabled ? 'вкл' : 'выкл';
     badge.classList.toggle('connected', remindersEnabled);
+  }
+
+  function updateCompanyNameDisplay(name){
+    const display = document.getElementById('company-name-display');
+    if(!display) return;
+    const parts = name.split(' ');
+    if(parts.length > 1){
+      const last = parts.pop();
+      display.innerHTML = parts.join(' ') + ' <span>' + last + '</span>';
+    } else {
+      const mid = Math.ceil(name.length / 2);
+      display.innerHTML = name.slice(0, mid) + '<span>' + name.slice(mid) + '</span>';
+    }
+  }
+
+  /* ---------- LOCAL STORAGE (data stays only on this device) ---------- */
+  const STORAGE_KEY = 'murbox_app_data_v1';
+
+  function persistData(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(buildBackupData()));
+      updateStorageInfo();
+    } catch(err){
+      console.warn('Не удалось сохранить данные локально (возможно, хранилище браузера отключено или переполнено):', err);
+    }
+  }
+
+  function loadPersistedData(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return false;
+      assignStateFromBackup(JSON.parse(raw));
+      updateCompanyNameDisplay(companyName);
+      return true;
+    } catch(err){
+      console.warn('Не удалось прочитать локально сохранённые данные:', err);
+      return false;
+    }
+  }
+
+  function updateStorageInfo(){
+    const el = document.getElementById('storage-banner-detail');
+    if(!el) return;
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY) || '';
+      const kb = new Blob([raw]).size / 1024;
+      const sizeText = kb < 1 ? '< 1 КБ' : (Math.round(kb * 10) / 10) + ' КБ';
+      el.textContent = `Сохранено на этом устройстве · ${sizeText} · боксов: ${boxesData.length}, контактов: ${contactsData.length}`;
+    } catch(err){
+      el.textContent = 'Всё сохраняется прямо в этом браузере — ничего не отправляется на сервер';
+    }
   }
 
   /* ---------- BACKUP / RESTORE ---------- */
@@ -1922,7 +2144,7 @@
     event.target.value = '';
   }
 
-  function applyBackupData(data){
+  function assignStateFromBackup(data){
     const s = data.settings || {};
     companyName = s.companyName || companyName;
     kwhPrice = s.kwhPrice || '';
@@ -1938,16 +2160,11 @@
     boxesData = data.boxesData || [];
     contactsData = data.contactsData || [];
     activityLog = (data.activityLog || []).map(e => ({ ...e, date: new Date(e.date) }));
+  }
 
-    const display = document.getElementById('company-name-display');
-    const parts = companyName.split(' ');
-    if(parts.length > 1){
-      const last = parts.pop();
-      display.innerHTML = parts.join(' ') + ' <span>' + last + '</span>';
-    } else {
-      const mid = Math.ceil(companyName.length / 2);
-      display.innerHTML = companyName.slice(0, mid) + '<span>' + companyName.slice(mid) + '</span>';
-    }
+  function applyBackupData(data){
+    assignStateFromBackup(data);
+    updateCompanyNameDisplay(companyName);
 
     renderBoxes();
     renderContacts();
@@ -2069,16 +2286,7 @@
     updateWhatsappStatusBadge();
     updateReminderStatusBadge();
     setupManifest();
-
-    const display = document.getElementById('company-name-display');
-    const parts = name.split(' ');
-    if(parts.length > 1){
-      const last = parts.pop();
-      display.innerHTML = parts.join(' ') + ' <span>' + last + '</span>';
-    } else {
-      const mid = Math.ceil(name.length / 2);
-      display.innerHTML = name.slice(0, mid) + '<span>' + name.slice(mid) + '</span>';
-    }
+    updateCompanyNameDisplay(name);
 
     renderBoxes();
     renderContacts();
@@ -2091,6 +2299,7 @@
     }
 
     closeSettingsModal();
+    showToast('Настройки сохранены на этом устройстве');
   }
 
   function showScreen(name){
@@ -2253,6 +2462,7 @@
 
   /* ---------- HOME REPORT ---------- */
   function renderReport(){
+    persistData();
     const now = new Date();
     let income = 0;
     boxesData.forEach(box => {
@@ -3206,6 +3416,7 @@
     }
   }
 
+  loadPersistedData();
   renderBoxes();
   renderContacts();
   renderReport();

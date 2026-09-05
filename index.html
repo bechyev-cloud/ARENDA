@@ -565,6 +565,22 @@
   }
   .btn-close-icon:active{ transform: scale(0.9); }
   .btn-close-icon svg{ width:14px; height:14px; stroke: var(--ink-soft); }
+  .btn-delete-icon{
+    position:absolute;
+    top:18px;
+    right:58px;
+    width:30px; height:30px;
+    border-radius:10px;
+    background: #FBEAEA;
+    border:1px solid rgba(196,68,68,0.3);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition: transform .1s ease, background .12s ease;
+  }
+  .btn-delete-icon:active{ transform: scale(0.9); }
+  .btn-delete-icon svg{ width:14px; height:14px; stroke:#C44444; }
   @keyframes slideup{ from{ transform: translateY(30px); opacity:0;} to{ transform: translateY(0); opacity:1;} }
   .modal-handle{
     width:40px; height:4px;
@@ -636,17 +652,26 @@
   .settings-section{
     background: var(--white);
     border:1px solid var(--line);
-    border-radius:20px;
-    padding: 18px 16px 6px;
-    margin-bottom:16px;
+    border-radius:18px;
+    margin-bottom:12px;
     box-shadow: 0 10px 24px -18px rgba(55,43,30,0.25);
+    overflow:hidden;
   }
-  .settings-section-head{
+  .settings-section-toggle{
+    width:100%;
     display:flex;
-    align-items:flex-start;
+    align-items:center;
     gap:11px;
-    margin-bottom:16px;
+    padding:14px 16px;
+    background:none;
+    border:none;
+    margin:0;
+    font-family:inherit;
+    text-align:left;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
   }
+  .settings-section-toggle:active{ background: var(--cream); }
   .settings-section-icon{
     width:36px; height:36px;
     border-radius:12px;
@@ -660,7 +685,8 @@
   .settings-section-icon svg{ width:17px; height:17px; stroke: var(--gold-deep); }
   .settings-section-icon--sage{ background:#EEF1E7; border-color:rgba(138,149,117,0.35); }
   .settings-section-icon--sage svg{ stroke: var(--sage-deep); }
-  .settings-section-head h4{
+  .settings-section-title{ flex:1; min-width:0; }
+  .settings-section-title h4{
     font-family:'Unbounded', sans-serif;
     font-size:13.5px;
     font-weight:600;
@@ -668,12 +694,34 @@
     line-height:1.4;
     margin-bottom:3px;
   }
-  .settings-section-head p{
+  .settings-section-title p{
     font-size:11.5px;
     color: var(--ink-soft);
     line-height:1.5;
-    max-width:290px;
   }
+  .settings-section-chevron{
+    width:22px; height:22px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: transform .25s ease;
+  }
+  .settings-section-chevron svg{ width:16px; height:16px; stroke: var(--ink-soft); }
+  .settings-section.open .settings-section-chevron{ transform: rotate(180deg); }
+  .settings-section-collapse{
+    display:grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .28s ease;
+  }
+  .settings-section.open .settings-section-collapse{ grid-template-rows: 1fr; }
+  .settings-section.open .settings-section-toggle{ border-bottom:1px solid var(--line); }
+  .settings-section-body{
+    overflow:hidden;
+    min-height:0;
+    padding:0 16px;
+  }
+  .settings-section.open .settings-section-body{ padding:14px 16px 16px; }
   .backup-actions{ display:flex; flex-direction:column; gap:8px; }
   .backup-actions .btn-ghost{
     width:100%;
@@ -1532,147 +1580,182 @@
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-head">
+      <div class="settings-section" id="settings-section-company">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
           <span class="settings-section-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l9-5 9 5v13"/><path d="M9 21v-6h6v6"/></svg>
           </span>
-          <div>
+          <span class="settings-section-title">
             <h4>Компания</h4>
             <p>Название появится на главном экране и в PDF-отчётах клиентам</p>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="field">
+              <label>Название компании</label>
+              <input type="text" id="input-company-name" placeholder="МурБокс">
+            </div>
           </div>
-        </div>
-        <div class="field">
-          <label>Название компании</label>
-          <input type="text" id="input-company-name" placeholder="МурБокс">
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-head">
+      <div class="settings-section" id="settings-section-rates">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
           <span class="settings-section-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
           </span>
-          <div>
+          <span class="settings-section-title">
             <h4>Тарифы и отображение</h4>
             <p>Влияет на расчёт счёта за свет и формат сумм в приложении</p>
-          </div>
-        </div>
-        <div class="field">
-          <label>Цена за электричество</label>
-          <div class="unit-input-row">
-            <input type="number" id="input-kwh-price" placeholder="8" min="0" step="0.1">
-            <div class="unit-suffix">₽ / кВт·ч</div>
-          </div>
-        </div>
-        <div class="field">
-          <label>Показывать копейки</label>
-          <div class="toggle-row">
-            <span class="toggle-desc">Суммы будут отображаться с копейками, например 150.50 ₽</span>
-            <label class="switch">
-              <input type="checkbox" id="input-show-kopecks">
-              <span class="slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="field">
-          <label>Оплата клиентами по умолчанию</label>
-          <div class="chip-select" id="settings-split-select">
-            <div class="chip-option active" data-value="поровну" onclick="selectSettingsSplit(this)">Поровну между клиентами</div>
-            <div class="chip-option" data-value="полностью" onclick="selectSettingsSplit(this)">Каждый платит полностью</div>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="field">
+              <label>Цена за электричество</label>
+              <div class="unit-input-row">
+                <input type="number" id="input-kwh-price" placeholder="8" min="0" step="0.1">
+                <div class="unit-suffix">₽ / кВт·ч</div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Показывать копейки</label>
+              <div class="toggle-row">
+                <span class="toggle-desc">Суммы будут отображаться с копейками, например 150.50 ₽</span>
+                <label class="switch">
+                  <input type="checkbox" id="input-show-kopecks">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Оплата клиентами по умолчанию</label>
+              <div class="chip-select" id="settings-split-select">
+                <div class="chip-option active" data-value="поровну" onclick="selectSettingsSplit(this)">Поровну между клиентами</div>
+                <div class="chip-option" data-value="полностью" onclick="selectSettingsSplit(this)">Каждый платит полностью</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-head">
+      <div class="settings-section" id="settings-section-whatsapp">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
           <span class="settings-section-icon settings-section-icon--sage">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.4 8.5 8.5 0 0 1-4-1L3 20l1.1-5.4a8.38 8.38 0 0 1-1-4A8.4 8.4 0 0 1 11.5 2 8.5 8.5 0 0 1 21 11.5Z"/></svg>
           </span>
-          <div>
+          <span class="settings-section-title">
             <h4>WhatsApp и автоматизация <span id="whatsapp-status-badge" class="wa-status">не подключён</span></h4>
             <p>Отправка PDF-отчётов и напоминаний клиентам напрямую в WhatsApp</p>
-          </div>
-        </div>
-        <div class="field">
-          <label>ID Instance</label>
-          <input type="text" id="input-green-id" placeholder="ID Instance">
-        </div>
-        <div class="field">
-          <label>API Token</label>
-          <input type="text" id="input-green-token" placeholder="API Token">
-          <div class="meter-hint">Данные можно получить в личном кабинете на <a href="https://green-api.com" target="_blank" style="color:var(--gold-deep); font-weight:700;">green-api.com</a>. После подключения в карточке контакта появится кнопка отправки PDF-отчёта.</div>
-        </div>
-        <div class="field">
-          <label>Автоотправка при оплате</label>
-          <div class="toggle-row">
-            <span class="toggle-desc">После записи платежа клиенту с указанным телефоном автоматически придёт PDF-отчёт</span>
-            <label class="switch">
-              <input type="checkbox" id="input-auto-send">
-              <span class="slider"></span>
-            </label>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="field">
+              <label>ID Instance</label>
+              <input type="text" id="input-green-id" placeholder="ID Instance">
+            </div>
+            <div class="field">
+              <label>API Token</label>
+              <input type="text" id="input-green-token" placeholder="API Token">
+              <div class="meter-hint">Данные можно получить в личном кабинете на <a href="https://green-api.com" target="_blank" style="color:var(--gold-deep); font-weight:700;">green-api.com</a>. После подключения в карточке контакта появится кнопка отправки PDF-отчёта.</div>
+            </div>
+            <div class="field">
+              <label>Автоотправка при оплате</label>
+              <div class="toggle-row">
+                <span class="toggle-desc">После записи платежа клиенту с указанным телефоном автоматически придёт PDF-отчёт</span>
+                <label class="switch">
+                  <input type="checkbox" id="input-auto-send">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-head">
+      <div class="settings-section" id="settings-section-reminders">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
           <span class="settings-section-icon settings-section-icon--sage">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
           </span>
-          <div>
+          <span class="settings-section-title">
             <h4>Напоминания о платежах <span id="reminder-status-badge" class="wa-status">выкл</span></h4>
             <p>В день оплаты бокса клиенту придёт текстовое напоминание в WhatsApp</p>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="field">
+              <label>Включить напоминания</label>
+              <div class="toggle-row">
+                <span class="toggle-desc">Проверка идёт автоматически каждую минуту, пока приложение открыто</span>
+                <label class="switch">
+                  <input type="checkbox" id="input-reminders-enabled">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Время отправки</label>
+              <input type="time" id="input-reminder-time">
+            </div>
+            <div class="field">
+              <label>Текст напоминания</label>
+              <textarea id="input-reminder-text" style="height:90px;" placeholder="Текст сообщения"></textarea>
+              <div class="meter-hint">Можно использовать: {имя}, {бокс}, {день}, {долг}</div>
+            </div>
+            <button type="button" class="btn-ghost" style="width:100%; margin-bottom:4px;" onclick="checkReminders(true)">Проверить и отправить сейчас</button>
           </div>
         </div>
-        <div class="field">
-          <label>Включить напоминания</label>
-          <div class="toggle-row">
-            <span class="toggle-desc">Проверка идёт автоматически каждую минуту, пока приложение открыто</span>
-            <label class="switch">
-              <input type="checkbox" id="input-reminders-enabled">
-              <span class="slider"></span>
-            </label>
-          </div>
-        </div>
-        <div class="field">
-          <label>Время отправки</label>
-          <input type="time" id="input-reminder-time">
-        </div>
-        <div class="field">
-          <label>Текст напоминания</label>
-          <textarea id="input-reminder-text" style="height:90px;" placeholder="Текст сообщения"></textarea>
-          <div class="meter-hint">Можно использовать: {имя}, {бокс}, {день}, {долг}</div>
-        </div>
-        <button type="button" class="btn-ghost" style="width:100%; margin-bottom:4px;" onclick="checkReminders(true)">Проверить и отправить сейчас</button>
       </div>
 
-      <div class="settings-section">
-        <div class="settings-section-head">
+      <div class="settings-section" id="settings-section-backup">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
           <span class="settings-section-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
           </span>
-          <div>
+          <span class="settings-section-title">
             <h4>Резервные копии</h4>
-            <p>На случай смены устройства или очистки браузера — данные из настроек выше не покидают это устройство сами по себе</p>
+            <p>На случай смены устройства или очистки браузера</p>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="field backup-actions">
+              <button type="button" class="btn-ghost" onclick="downloadBackup()">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+                Скачать файл копии
+              </button>
+              <button type="button" class="btn-ghost" onclick="copyBackupToClipboard()">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Скопировать в буфер
+              </button>
+              <label class="btn-ghost" style="cursor:pointer;">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
+                Восстановить из файла
+                <input type="file" id="input-restore-file" accept="application/json" style="display:none;" onchange="restoreFromFile(event)">
+              </label>
+            </div>
+            <div class="meter-hint">Копия включает боксы, контакты, настройки и историю операций.</div>
           </div>
         </div>
-        <div class="field backup-actions">
-          <button type="button" class="btn-ghost" onclick="downloadBackup()">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-            Скачать файл копии
-          </button>
-          <button type="button" class="btn-ghost" onclick="copyBackupToClipboard()">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            Скопировать в буфер
-          </button>
-          <label class="btn-ghost" style="cursor:pointer;">
-            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
-            Восстановить из файла
-            <input type="file" id="input-restore-file" accept="application/json" style="display:none;" onchange="restoreFromFile(event)">
-          </label>
-        </div>
-        <div class="meter-hint">Копия включает боксы, контакты, настройки и историю операций.</div>
       </div>
 
       <div class="modal-actions">
@@ -1691,6 +1774,9 @@
   <div class="modal-overlay" id="box-modal">
     <div class="modal-sheet">
       <div class="modal-handle"></div>
+      <div class="btn-delete-icon" id="btn-delete-box" title="Удалить бокс" onclick="deleteBox()" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+      </div>
       <div class="btn-close-icon" onclick="closeBoxModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
       </div>
@@ -2006,7 +2092,12 @@
     );
     updateWhatsappStatusBadge();
     updateStorageInfo();
+    document.querySelectorAll('#settings-modal .settings-section').forEach(s => s.classList.remove('open'));
     document.getElementById('settings-modal').classList.add('open');
+  }
+
+  function toggleSettingsSection(btn){
+    btn.closest('.settings-section').classList.toggle('open');
   }
 
   function updateWhatsappStatusBadge(){
@@ -2546,6 +2637,7 @@
     document.getElementById('input-box-meter').value = '';
     document.getElementById('input-box-desc').value = '';
     setBoxSplitUI(defaultBoxSplit);
+    document.getElementById('btn-delete-box').style.display = 'none';
     document.getElementById('box-modal').classList.add('open');
   }
 
@@ -2560,6 +2652,7 @@
     document.getElementById('input-box-meter').value = box.meterStart || '';
     document.getElementById('input-box-desc').value = box.desc;
     setBoxSplitUI(box.paymentSplit || 'поровну');
+    document.getElementById('btn-delete-box').style.display = 'flex';
     closeBoxDetailModal();
     document.getElementById('box-modal').classList.add('open');
   }
@@ -2611,6 +2704,29 @@
       openBoxDetail(editingBoxIndex);
       editingBoxIndex = null;
     }
+  }
+
+  function deleteBox(){
+    if(editingBoxIndex === null) return;
+    const box = boxesData[editingBoxIndex];
+    if(!box) return;
+
+    const ok = confirm(`Удалить бокс «${box.name}»? Вся история платежей и показаний счётчика этого бокса будет удалена без возможности восстановления. Долги контактов при этом сохранятся и никуда не денутся.`);
+    if(!ok) return;
+
+    boxesData.splice(editingBoxIndex, 1);
+    logActivity(`Удалён бокс «${box.name}»`);
+
+    editingBoxIndex = null;
+    currentDetailIndex = null;
+
+    closeBoxModal();
+    closeBoxDetailModal();
+
+    renderBoxes();
+    renderContacts();
+    renderReport();
+    showToast('Бокс удалён');
   }
 
   /* ---------- METER READING ---------- */
@@ -3114,6 +3230,11 @@
 
   function deleteContact(){
     const c = contactsData[currentContactDetailIndex];
+    if(!c) return;
+
+    const ok = confirm(`Удалить контакт «${c.fio}»? Это действие нельзя отменить.`);
+    if(!ok) return;
+
     boxesData.forEach(box => {
       if(box.clients){
         box.clients = box.clients.filter(name => name !== c.fio);
@@ -3125,6 +3246,7 @@
     renderContacts();
     renderBoxes();
     renderReport();
+    showToast('Контакт удалён');
   }
 
   /* ---------- CONTACT AMOUNT (debt / payment) ---------- */

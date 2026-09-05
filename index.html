@@ -4454,6 +4454,17 @@
     return doc.output('blob');
   }
 
+  function buildPdfFileName(){
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const yyyy = now.getFullYear();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const min = String(now.getMinutes()).padStart(2, '0');
+    const safeCompany = (companyName || 'МурБокс').replace(/[\\/:*?"<>|]/g, '').trim() || 'МурБокс';
+    return `${safeCompany} ${dd}.${mm}.${yyyy} ${hh}-${min}.pdf`;
+  }
+
   async function sendReportToContact(contact, paymentInfo){
     if(!greenApiIdInstance || !greenApiToken){
       return { ok:false, reason:'not-connected' };
@@ -4473,7 +4484,7 @@
 
       const formData = new FormData();
       formData.append('chatId', chatId);
-      formData.append('file', blob, `Отчёт ${contact.fio}.pdf`);
+      formData.append('file', blob, buildPdfFileName());
       formData.append('caption', caption);
 
       const url = `https://api.green-api.com/waInstance${greenApiIdInstance}/sendFileByUpload/${greenApiToken}`;

@@ -441,6 +441,10 @@
     border-radius:100px;
     margin-bottom:2px;
   }
+  .temp-timer.overdue{
+    color: #C44444;
+    background: #FBEAEA;
+  }
   .temp-card-expand{
     display:grid;
     grid-template-rows: 0fr;
@@ -2146,6 +2150,16 @@
       </div>
 
       <div class="field">
+        <label>Сумма за день</label>
+        <input type="text" id="input-temp-price-day" placeholder="Например: 1500 ₽">
+      </div>
+
+      <div class="field">
+        <label>Сумма за час</label>
+        <input type="text" id="input-temp-price-hour" placeholder="Например: 200 ₽">
+      </div>
+
+      <div class="field">
         <label>Дата начала</label>
         <input type="date" id="input-temp-start-date">
       </div>
@@ -3344,6 +3358,8 @@
     document.getElementById('input-temp-phone').value = '';
     selectTempDuration(document.querySelector('#temp-duration-select .chip-option[data-value="часы"]'));
     document.getElementById('input-temp-duration-value').value = '';
+    document.getElementById('input-temp-price-day').value = '';
+    document.getElementById('input-temp-price-hour').value = '';
     const now = new Date();
     document.getElementById('input-temp-start-date').value = localDateStr(now);
     document.getElementById('input-temp-start-time').value =
@@ -3362,6 +3378,8 @@
     document.getElementById('input-temp-phone').value = b.phone || '';
     selectTempDuration(document.querySelector(`#temp-duration-select .chip-option[data-value="${b.durationType || 'часы'}"]`));
     document.getElementById('input-temp-duration-value').value = b.durationValue || '';
+    document.getElementById('input-temp-price-day').value = b.priceDay || '';
+    document.getElementById('input-temp-price-hour').value = b.priceHour || '';
     document.getElementById('input-temp-start-date').value = b.startDate || '';
     document.getElementById('input-temp-start-time').value = b.startTime || '';
     const statusToSelect = b.status === 'активен' ? 'активен' : 'бронь';
@@ -3378,6 +3396,8 @@
     const name = document.getElementById('input-temp-name').value.trim();
     const phone = document.getElementById('input-temp-phone').value.trim();
     const durationValue = document.getElementById('input-temp-duration-value').value.trim();
+    const priceDay = document.getElementById('input-temp-price-day').value.trim();
+    const priceHour = document.getElementById('input-temp-price-hour').value.trim();
     const startDate = document.getElementById('input-temp-start-date').value;
     const startTime = document.getElementById('input-temp-start-time').value;
 
@@ -3387,7 +3407,7 @@
     }
 
     const isNew = editingTemporaryIndex === null;
-    const booking = { name, phone, durationType: selectedTempDuration, durationValue, startDate, startTime, status: selectedTempStatus };
+    const booking = { name, phone, durationType: selectedTempDuration, durationValue, priceDay, priceHour, startDate, startTime, status: selectedTempStatus };
 
     if(isNew){
       temporaryBookings.push(booking);
@@ -3466,10 +3486,18 @@
             <span class="wa-status ${statusClass}">${tempStatusLabel(b.status)}</span>
           </div>
           ${b.phone ? `<div class="dims">${b.phone}</div>` : ''}
+          ${(b.priceDay || b.priceHour) ? `<div class="dims">${b.priceDay ? b.priceDay + '/сутки' : ''}${b.priceDay && b.priceHour ? ' · ' : ''}${b.priceHour ? b.priceHour + '/час' : ''}</div>` : ''}
           ${(b.startDate || b.startTime) ? `<div class="dims">Начало — ${b.startDate ? new Date(b.startDate + 'T00:00:00').toLocaleDateString('ru-RU') : ''}${b.startTime ? ', ' + b.startTime : ''}</div>` : ''}
           <div class="temp-timer" id="temp-timer-${i}"></div>
           <div class="temp-card-expand">
             <div class="temp-card-expand-inner">
+              <div class="toggle-row" style="grid-column: 1 / -1;" onclick="event.stopPropagation();">
+                <span class="toggle-desc">Обратный отсчёт (до конца срока) вместо обычного (с начала)</span>
+                <label class="switch">
+                  <input type="checkbox" ${b.timerMode === 'обратный' ? 'checked' : ''} onchange="event.stopPropagation(); toggleTempTimerMode(${i}, this.checked)">
+                  <span class="slider"></span>
+                </label>
+              </div>
               <button type="button" class="btn-ghost" onclick="event.stopPropagation(); openEditTemporary(${i})">Изменить</button>
               <button type="button" class="btn-ghost" onclick="event.stopPropagation(); quickExtendTemporary(${i})">Продлить</button>
               <button type="button" class="btn-ghost" onclick="event.stopPropagation(); openTempPaymentModal(${i})">Оплатить</button>
@@ -3490,17 +3518,28 @@
     card.classList.toggle('expanded');
   }
 
-  function formatElapsedTime(ms){
-    const isFuture = ms < 0;
-    const abs = Math.abs(ms);
-    const totalSeconds = Math.floor(abs / 1000);
+  function formatDurationParts(ms){
+    const totalSeconds = Math.floor(ms / 1000);
     const days = Math.floor(totalSeconds / 86400);
     const hours = Math.floor((totalSeconds % 86400) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
     const pad = n => String(n).padStart(2, '0');
-    const text = `${days}д ${pad(hours)}ч ${pad(minutes)}м ${pad(seconds)}с`;
+    return `${days}д ${pad(hours)}ч ${pad(minutes)}м ${pad(seconds)}с`;
+  }
+
+  function formatElapsedTime(ms){
+    const isFuture = ms < 0;
+    const text = formatDurationParts(Math.abs(ms));
     return isFuture ? `Начнётся через ${text}` : `В аренде: ${text}`;
+  }
+
+  function toggleTempTimerMode(index, isReverse){
+    const b = temporaryBookings[index];
+    if(!b) return;
+    b.timerMode = isReverse ? 'обратный' : 'обычный';
+    renderReport();
+    updateTemporaryTimers();
   }
 
   function updateTemporaryTimers(){
@@ -3512,7 +3551,23 @@
       if(!b.startDate){ el.textContent = ''; return; }
       const start = new Date(b.startDate + 'T' + (b.startTime || '00:00') + ':00');
       if(isNaN(start.getTime())){ el.textContent = ''; return; }
-      el.textContent = formatElapsedTime(now - start);
+
+      if(b.timerMode === 'обратный'){
+        const qty = parseFloat(b.durationValue) || 0;
+        if(!qty){
+          el.classList.remove('overdue');
+          el.textContent = 'Укажите срок для обратного отсчёта';
+          return;
+        }
+        const durationMs = qty * (b.durationType === 'сутки' ? 86400000 : 3600000);
+        const end = new Date(start.getTime() + durationMs);
+        const diff = end - now;
+        el.classList.toggle('overdue', diff < 0);
+        el.textContent = (diff < 0 ? 'Просрочено: ' : 'Осталось: ') + formatDurationParts(Math.abs(diff));
+      } else {
+        el.classList.remove('overdue');
+        el.textContent = formatElapsedTime(now - start);
+      }
     });
   }
 
@@ -3524,7 +3579,10 @@
     tempPaymentIndex = index;
     const b = temporaryBookings[index];
     document.getElementById('temp-payment-name').textContent = b.name;
-    document.getElementById('input-temp-payment-amount').value = '';
+    const rate = parseFloat(String(b.durationType === 'сутки' ? b.priceDay : b.priceHour).replace(/[^0-9.]/g, '')) || 0;
+    const qty = parseFloat(b.durationValue) || 0;
+    const suggested = rate && qty ? rate * qty : '';
+    document.getElementById('input-temp-payment-amount').value = suggested ? suggested + ' ₽' : '';
     document.getElementById('temporary-payment-modal').classList.add('open');
   }
 

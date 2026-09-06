@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>МурБокс</title>
+<title>Аренда</title>
 <meta name="theme-color" content="#C08F4C">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="МурБокс">
+<meta name="apple-mobile-web-app-title" content="Аренда">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -430,6 +430,13 @@
   .box-card .foot{ display:flex; align-items:center; justify-content:space-between; }
   .box-card .price{ font-family:'Unbounded',sans-serif; font-size:14px; color:var(--gold-deep); font-weight:700; }
 
+  .temp-timer-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+  }
   .temp-timer{
     font-family:'Unbounded', sans-serif;
     font-size:11.5px;
@@ -439,7 +446,6 @@
     display:inline-block;
     padding:4px 10px;
     border-radius:100px;
-    margin-bottom:2px;
   }
   .temp-timer.overdue{
     color: #C44444;
@@ -454,15 +460,34 @@
   .temp-card-expand-inner{
     overflow:hidden;
     min-height:0;
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
+    display:flex;
+    gap:6px;
   }
-  .box-card.expanded .temp-card-expand-inner{ padding-top:12px; }
-  .temp-card-expand-inner .btn-ghost{
-    text-align:center;
-    padding:8px 10px;
+  .box-card.expanded .temp-card-expand-inner{ padding-top:2px; }
+  .btn-temp-action{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    padding:9px 2px;
+    border-radius:14px;
+    border:1px solid var(--line);
+    background: var(--white);
+    cursor:pointer;
+    font-family:'Manrope', sans-serif;
+    font-size:9.5px;
+    font-weight:700;
+    transition: transform .1s ease;
   }
+  .btn-temp-action:active{ transform: scale(0.94); }
+  .btn-temp-action svg{ width:16px; height:16px; stroke: currentColor; flex-shrink:0; }
+  .btn-temp-action span{ line-height:1; white-space:nowrap; }
+  .btn-temp-action.tone-neutral{ color: var(--ink); background: var(--cream); border-color: var(--line); }
+  .btn-temp-action.tone-sage{ color: var(--sage-deep); background: #EAEEE3; border-color: rgba(138,149,117,0.35); }
+  .btn-temp-action.tone-gold{ color: var(--gold-deep); background: #F5E9D3; border-color: rgba(192,143,76,0.4); }
+  .btn-temp-action.tone-red{ color:#C44444; background:#FBEAEA; border-color: rgba(196,68,68,0.3); }
   .btn-ghost{
     font-size:12px;
     font-weight:700;
@@ -970,6 +995,11 @@
     font-weight:700;
     color: var(--ink);
     padding-right:10px;
+    flex:1;
+    min-width:0;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
   .btn-edit-icon{
     width:32px; height:32px;
@@ -1020,23 +1050,18 @@
   .debt-card{
     background: linear-gradient(135deg, #F3E7DD, #EEDFC9);
     border-radius:18px;
-    padding: 16px 18px;
+    padding: 12px 8px;
     text-align:center;
-    flex:1;
   }
   .debt-card.zero{ background: linear-gradient(135deg, #EAEEE3, #E1E9D5); }
   .detail-stats-row{
-    display:flex;
-    gap:10px;
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:8px;
     margin-bottom:22px;
   }
   .paid-card{
     background: linear-gradient(135deg, #EAEEE3, #E1E9D5);
-    border-radius:18px;
-    padding: 16px 18px;
-    text-align:center;
-    flex:1;
-    margin-bottom:22px;
   }
   .debt-amount.paid{ color: var(--sage-deep); }
   .payday-line{
@@ -1053,18 +1078,21 @@
   }
   .payday-line svg{ width:15px; height:15px; stroke: var(--gold-deep); flex-shrink:0; }
   .debt-label{
-    font-size:11px;
+    font-size:9.5px;
     font-weight:700;
     color: var(--ink-soft);
     text-transform:uppercase;
-    letter-spacing:.04em;
+    letter-spacing:.03em;
     margin-bottom:4px;
   }
   .debt-amount{
     font-family:'Unbounded', sans-serif;
-    font-size:26px;
+    font-size:15.5px;
     font-weight:700;
     color: var(--gold-deep);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
   .debt-amount.zero{ color: var(--sage-deep); }
 
@@ -1127,6 +1155,19 @@
   }
   .detail-collapse-chevron svg{ width:15px; height:15px; stroke: var(--ink-soft); }
   .detail-collapse-section.open .detail-collapse-chevron{ transform: rotate(180deg); }
+  .detail-collapse-add{
+    width:24px; height:24px;
+    flex-shrink:0;
+    border-radius:8px;
+    background: var(--cream);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+  }
+  .detail-collapse-add:active{ transform: scale(0.9); }
+  .detail-collapse-add svg{ width:13px; height:13px; stroke: var(--gold-deep); }
   .detail-collapse-section.open .detail-collapse-toggle{ border-bottom:1px solid var(--line); }
   .detail-collapse-body{
     display:grid;
@@ -1494,6 +1535,93 @@
     transform: translateX(-50%) translateY(0);
   }
 
+  /* ---------- PAYMENT FLOW ANIMATION ---------- */
+  .payment-flow-overlay{
+    position:absolute;
+    inset:0;
+    background: rgba(55,43,30,0.55);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:90;
+  }
+  .payment-flow-overlay.open{ display:flex; }
+  .payment-flow-card{
+    background: var(--paper);
+    border-radius:28px;
+    padding:34px 26px 28px;
+    width:80%;
+    max-width:290px;
+    text-align:center;
+    box-shadow: 0 30px 60px -18px rgba(55,43,30,0.55);
+    animation: paymentPop .38s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes paymentPop{
+    from{ transform: scale(0.7); opacity:0; }
+    to{ transform: scale(1); opacity:1; }
+  }
+  .payment-flow-icon{
+    width:62px; height:62px;
+    margin:0 auto 16px;
+    border-radius:50%;
+    background: linear-gradient(135deg, #EAEEE3, #E1E9D5);
+    display:flex; align-items:center; justify-content:center;
+    animation: paymentIconPop .45s .08s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes paymentIconPop{
+    from{ transform: scale(0) rotate(-20deg); }
+    to{ transform: scale(1) rotate(0); }
+  }
+  .payment-flow-icon svg{ width:30px; height:30px; stroke: var(--sage-deep); }
+  .payment-flow-amount{
+    font-family:'Unbounded', sans-serif;
+    font-size:27px;
+    font-weight:800;
+    color: var(--ink);
+    margin-bottom:4px;
+    animation: paymentFadeUp .3s .16s both;
+  }
+  .payment-flow-label{
+    font-size:12.5px;
+    color: var(--ink-soft);
+    margin-bottom:18px;
+    animation: paymentFadeUp .3s .22s both;
+  }
+  @keyframes paymentFadeUp{
+    from{ opacity:0; transform:translateY(8px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .payment-flow-wa{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    font-size:11.5px;
+    font-weight:700;
+    padding:10px 14px;
+    border-radius:100px;
+    background: var(--cream);
+    color: var(--ink-soft);
+    animation: paymentFadeUp .3s .28s both;
+  }
+  .payment-flow-wa-spinner{ display:none; }
+  .payment-flow-wa.sending .payment-flow-wa-spinner{
+    display:inline-block;
+    width:13px; height:13px;
+    border:2px solid rgba(122,109,92,0.25);
+    border-top-color: var(--ink-soft);
+    border-radius:50%;
+    animation: paymentSpin .7s linear infinite;
+  }
+  @keyframes paymentSpin{ to{ transform: rotate(360deg); } }
+  .payment-flow-wa.success{ background:#E3F3E9; color:#1D8A4C; }
+  .payment-flow-wa.fail{ background:#FBEAEA; color:#C44444; }
+  .payment-flow-wa-icon{ width:14px; height:14px; display:none; flex-shrink:0; }
+  .payment-flow-wa.success .payment-flow-wa-icon.icon-check{ display:inline-block; }
+  .payment-flow-wa.fail .payment-flow-wa-icon.icon-cross{ display:inline-block; }
+
   /* ---------- BOTTOM NAV ---------- */
   .bottombar{
     flex-shrink:0;
@@ -1539,7 +1667,7 @@
         <circle cx="16.5" cy="12.5" r="1" fill="#372B1E"/>
         <circle cx="23.5" cy="12.5" r="1" fill="#372B1E"/>
       </svg>
-      <div class="brand-name" id="company-name-display">Мур<span>Бокс</span></div>
+      <div class="brand-name" id="company-name-display">Аре<span>нда</span></div>
     </div>
     <div class="top-actions">
       <div class="icon-btn add-btn is-hidden" id="btn-search" title="Поиск" onclick="toggleSearch()">
@@ -1779,7 +1907,7 @@
           </span>
           <span class="settings-section-title">
             <h4>Компания</h4>
-            <p>Название появится на главном экране и в PDF-отчётах клиентам</p>
+            <p>Название появится на главном экране и в отчётах клиентам</p>
           </span>
           <span class="settings-section-chevron">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
@@ -1789,7 +1917,7 @@
           <div class="settings-section-body">
             <div class="field">
               <label>Название компании</label>
-              <input type="text" id="input-company-name" placeholder="МурБокс">
+              <input type="text" id="input-company-name" placeholder="Аренда">
             </div>
           </div>
         </div>
@@ -1845,7 +1973,7 @@
           </span>
           <span class="settings-section-title">
             <h4>WhatsApp и автоматизация <span id="whatsapp-status-badge" class="wa-status">не подключён</span></h4>
-            <p>Отправка PDF-отчётов и напоминаний клиентам напрямую в WhatsApp</p>
+            <p>Отправка отчётов и напоминаний клиентам напрямую в WhatsApp</p>
           </span>
           <span class="settings-section-chevron">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
@@ -1860,17 +1988,48 @@
             <div class="field">
               <label>API Token</label>
               <input type="text" id="input-green-token" placeholder="API Token">
-              <div class="meter-hint">Данные можно получить в личном кабинете на <a href="https://green-api.com" target="_blank" style="color:var(--gold-deep); font-weight:700;">green-api.com</a>. После подключения в карточке контакта появится кнопка отправки PDF-отчёта.</div>
+              <div class="meter-hint">Данные можно получить в личном кабинете на <a href="https://green-api.com" target="_blank" style="color:var(--gold-deep); font-weight:700;">green-api.com</a>. После подключения в карточке контакта появится кнопка отправки отчёта (формат — ниже, в разделе «Формат отчёта клиенту»).</div>
             </div>
             <div class="field">
               <label>Автоотправка при оплате</label>
               <div class="toggle-row">
-                <span class="toggle-desc">После записи платежа клиенту с указанным телефоном автоматически придёт PDF-отчёт</span>
+                <span class="toggle-desc">После записи платежа клиенту с указанным телефоном автоматически придёт отчёт</span>
                 <label class="switch">
                   <input type="checkbox" id="input-auto-send">
                   <span class="slider"></span>
                 </label>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section" id="settings-section-report-format">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
+          <span class="settings-section-icon settings-section-icon--sage">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h6M9 19h3"/></svg>
+          </span>
+          <span class="settings-section-title">
+            <h4>Формат отчёта клиенту <span id="report-format-status-badge" class="wa-status">PDF</span></h4>
+            <p>Что отправляется клиенту в WhatsApp — файл или текстовое сообщение</p>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="field">
+              <label>Способ отправки</label>
+              <div class="chip-select" id="report-format-select">
+                <div class="chip-option active" data-value="pdf" onclick="selectReportFormat(this)">PDF-документом</div>
+                <div class="chip-option" data-value="text" onclick="selectReportFormat(this)">Текстовым сообщением</div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Текст отчёта</label>
+              <textarea id="input-text-report" style="height:180px;" placeholder="Текст сообщения"></textarea>
+              <div class="meter-hint">Используется, если выбран способ «Текстовым сообщением». Можно использовать: {имя}, {компания}, {бокс}, {оплачено}, {аренда}, {свет}, {долг}. Звёздочки *текст* делают жирным в WhatsApp.</div>
             </div>
           </div>
         </div>
@@ -1907,10 +2066,74 @@
             </div>
             <div class="field">
               <label>Текст напоминания</label>
-              <textarea id="input-reminder-text" style="height:90px;" placeholder="Текст сообщения"></textarea>
-              <div class="meter-hint">Можно использовать: {имя}, {бокс}, {день}, {долг}</div>
+              <textarea id="input-reminder-text" style="height:160px;" placeholder="Текст сообщения"></textarea>
+              <div class="meter-hint">Можно использовать: {имя}, {компания}, {бокс}, {день}, {долг}, {аренда}, {свет}. Звёздочки *текст* делают жирным в WhatsApp.</div>
             </div>
             <button type="button" class="btn-ghost" style="width:100%; margin-bottom:4px;" onclick="checkReminders(true)">Проверить и отправить сейчас</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section" id="settings-section-overdue">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
+          <span class="settings-section-icon" style="background:#FBEAEA; border-color:rgba(196,68,68,0.3);">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#C44444"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+          </span>
+          <span class="settings-section-title">
+            <h4>Оповещения о просрочках <span id="overdue-status-badge" class="wa-status">выкл</span></h4>
+            <p>Если долг не погашен, клиенту напомнят через неделю, две недели и месяц</p>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="field">
+              <label>Включить оповещения о просрочках</label>
+              <div class="toggle-row">
+                <span class="toggle-desc">Отправляются автоматически на 7-й, 14-й и 30-й день просрочки, пока долг не погашен</span>
+                <label class="switch">
+                  <input type="checkbox" id="input-overdue-enabled">
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Текст оповещения</label>
+              <textarea id="input-overdue-text" style="height:160px;" placeholder="Текст сообщения"></textarea>
+              <div class="meter-hint">Можно использовать: {иконка}, {заголовок}, {имя}, {компания}, {бокс}, {долг}, {дней}. Тон и значок сами усиливаются на 7 / 14 / 30 день. Звёздочки *текст* делают жирным в WhatsApp.</div>
+            </div>
+            <button type="button" class="btn-ghost" style="width:100%; margin-bottom:4px;" onclick="checkOverdueNotifications(true)">Проверить и отправить сейчас</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section" id="settings-section-debt-transfers">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
+          <span class="settings-section-icon settings-section-icon--sage">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M12 14v3M10.5 15.5h3"/></svg>
+          </span>
+          <span class="settings-section-title">
+            <h4>История переносов долга <span id="debt-transfers-status-badge" class="wa-status connected">видна</span></h4>
+            <p>Показывать в карточке контакта строку «История переносов» (перенос долга на новую дату)</p>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="field">
+              <label>Показывать историю переносов</label>
+              <div class="toggle-row">
+                <span class="toggle-desc">Отключите, чтобы убрать строку из карточки контакта — сам перенос долга и уведомление клиенту в WhatsApp продолжат работать в любом случае</span>
+                <label class="switch">
+                  <input type="checkbox" id="input-show-debt-transfers" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -2075,17 +2298,6 @@
         <div class="meter-hint">Если клиент заезжает не с начала месяца, укажите дату первого платежа отдельно — она индивидуальная. Все следующие платежи будут считаться по обычному «Дню оплаты» выше.</div>
       </div>
 
-      <div class="field" id="field-box-temporary" style="display:none;">
-        <label>Временный бокс</label>
-        <div class="toggle-row">
-          <span class="toggle-desc">Отметьте, если бокс сдаётся на короткий срок, а не на постоянной основе</span>
-          <label class="switch">
-            <input type="checkbox" id="input-box-temporary">
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
-
       <div class="field">
         <label>Начальные показания счётчика (кВт)</label>
         <input type="number" id="input-box-meter" placeholder="Например: 1245">
@@ -2205,6 +2417,62 @@
     </div>
   </div>
 
+  <!-- TEMPORARY BOOKING EXTEND -->
+  <div class="modal-overlay" id="temp-extend-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="btn-close-icon" onclick="closeTempExtendModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </div>
+      <h3>Продлить — <span id="temp-extend-name"></span></h3>
+
+      <div class="field">
+        <label>На какое время</label>
+        <div class="chip-select" id="temp-extend-unit-select">
+          <div class="chip-option active" data-value="часы" onclick="selectTempExtendUnit(this)">Часы</div>
+          <div class="chip-option" data-value="сутки" onclick="selectTempExtendUnit(this)">Сутки</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>На какой срок</label>
+        <input type="number" id="input-temp-extend-qty" min="1" value="1">
+      </div>
+
+      <div class="field">
+        <label>Своя сумма за этот срок</label>
+        <input type="text" id="input-temp-extend-amount" placeholder="Оставьте пустым — по обычной цене">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeTempExtendModal()">Отменить</button>
+        <button class="btn-save" onclick="confirmExtendTemporary()">Продлить</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEMPORARY BOOKING COMPLETE -->
+  <div class="modal-overlay" id="temp-complete-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="btn-close-icon" onclick="closeTempCompleteModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </div>
+      <h3>Завершить — <span id="temp-complete-name"></span></h3>
+
+      <div class="field">
+        <label>Сумма за аренду</label>
+        <input type="text" id="input-temp-complete-amount" placeholder="Например: 1500 ₽">
+      </div>
+
+      <button class="btn-cancel" style="width:100%; margin-bottom:8px;" onclick="closeTempCompleteModal()">Отмена</button>
+      <div class="modal-actions" style="margin-top:0;">
+        <button class="btn-ghost" style="flex:1; padding:13px 10px; background:#FBEAEA; color:#C44444; border-color:rgba(196,68,68,0.3);" onclick="finishTemporaryBooking(false)">Не оплачено</button>
+        <button class="btn-save" style="flex:1;" onclick="finishTemporaryBooking(true)">Оплачено</button>
+      </div>
+    </div>
+  </div>
+
   <!-- CONTACT MODAL -->
   <div class="modal-overlay" id="contact-modal">
     <div class="modal-sheet">
@@ -2249,7 +2517,7 @@
 
       <div class="detail-top">
         <h3 id="cdetail-name">Контакт</h3>
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:8px; flex-shrink:0;">
           <div class="btn-edit-icon" title="Удалить" onclick="deleteContact()">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
           </div>
@@ -2258,6 +2526,9 @@
               <path d="M12 20h9"/>
               <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/>
             </svg>
+          </div>
+          <div class="btn-edit-icon" title="Перенести долг" onclick="openDeferDebtModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><path d="M12 14v3M10.5 15.5h3"/></svg>
           </div>
           <div class="btn-edit-icon" title="Закрыть" onclick="closeContactDetailModal()">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -2280,6 +2551,29 @@
         </div>
       </div>
 
+      <div class="detail-collapse-section" id="detail-transfers-section">
+        <button type="button" class="detail-collapse-toggle" onclick="toggleDetailSection(this)">
+          <span class="detail-collapse-title">История переносов <span class="detail-collapse-count" id="detail-transfers-count">0</span></span>
+          <span style="display:flex; align-items:center; gap:8px;">
+            <span class="detail-collapse-add" onclick="event.stopPropagation(); openDeferDebtModal();" title="Добавить перенос">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+            <span class="detail-collapse-chevron">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </span>
+        </button>
+        <div class="detail-collapse-body">
+          <div class="detail-collapse-body-inner">
+            <div id="detail-transfers-list"></div>
+            <div class="empty-state small" id="detail-transfers-empty">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg>
+              <p>Переносов пока не было</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="payday-line" id="cdetail-phone-line" style="display:none;"></div>
       <div class="payday-line" id="cdetail-address-line" style="display:none;"></div>
       <div class="payday-line" id="cdetail-box-line" style="display:none;"></div>
@@ -2294,6 +2588,36 @@
         <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.79.47 3.47 1.29 4.93L2 22l5.28-1.38a9.86 9.86 0 0 0 4.76 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2zm0 18.02h-.01a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.13.82.84-3.05-.2-.32a8.13 8.13 0 0 1-1.24-4.34c0-4.49 3.66-8.15 8.16-8.15 4.49 0 8.15 3.65 8.15 8.15s-3.65 8.2-8.13 8.2zm4.47-6.11c-.24-.12-1.45-.71-1.68-.8-.22-.08-.39-.12-.55.12-.16.24-.63.8-.78.96-.14.16-.29.18-.53.06-.24-.12-1.03-.38-1.96-1.21-.72-.65-1.21-1.44-1.35-1.68-.14-.24-.02-.37.11-.49.11-.11.24-.29.36-.43.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.55-1.32-.75-1.81-.2-.48-.4-.41-.55-.42-.14-.01-.3-.01-.46-.01-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.13 3.64.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z"/></svg>
         <span id="btn-send-whatsapp-label">Отправить PDF-отчёт в WhatsApp</span>
       </button>
+    </div>
+  </div>
+
+  <!-- DEFER DEBT MODAL -->
+  <div class="modal-overlay" id="defer-debt-modal" style="z-index:65;">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="btn-close-icon" onclick="closeDeferDebtModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </div>
+      <h3>Перенести долг — <span id="defer-debt-name"></span></h3>
+
+      <div class="field">
+        <label>Дата и время переноса</label>
+        <div class="price-row">
+          <input type="date" id="input-defer-date">
+          <input type="time" id="input-defer-time">
+        </div>
+        <div class="meter-hint">Когда наступит это время, клиенту автоматически придёт напоминание в WhatsApp, если долг ещё не погашен.</div>
+      </div>
+
+      <div class="field">
+        <label>Описание обещания</label>
+        <textarea id="input-defer-note" style="height:80px;" placeholder="Например: обещал оплатить после зарплаты"></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeDeferDebtModal()">Отменить</button>
+        <button class="btn-save" onclick="confirmDeferDebt()">Перенести</button>
+      </div>
     </div>
   </div>
 
@@ -2333,7 +2657,7 @@
       <div class="modal-handle"></div>
       <div class="detail-top">
         <h3 id="detail-box-name">Бокс</h3>
-        <div style="display:flex; gap:8px; align-items:center;">
+        <div style="display:flex; gap:8px; align-items:center; flex-shrink:0;">
           <div class="btn-edit-icon" title="Изменить" onclick="openEditBox()">
             <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 20h9"/>
@@ -2364,11 +2688,10 @@
           <div class="debt-label">Долг за свет</div>
           <div class="debt-amount" id="detail-debt-light">0 ₽</div>
         </div>
-      </div>
-
-      <div class="paid-card" id="detail-paid-card">
-        <div class="debt-label">Оплачено всего</div>
-        <div class="debt-amount paid" id="detail-paid">0 ₽</div>
+        <div class="debt-card paid-card" id="detail-paid-card">
+          <div class="debt-label">Оплачено всего</div>
+          <div class="debt-amount paid" id="detail-paid">0 ₽</div>
+        </div>
       </div>
 
       <div class="payday-line" id="detail-payday" style="display:none;"></div>
@@ -2445,6 +2768,23 @@
     </div>
   </div>
 
+  <!-- PAYMENT FLOW ANIMATION -->
+  <div class="payment-flow-overlay" id="payment-flow-overlay">
+    <div class="payment-flow-card">
+      <div class="payment-flow-icon" id="payment-flow-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <div class="payment-flow-amount" id="payment-flow-amount">0 ₽</div>
+      <div class="payment-flow-label" id="payment-flow-label"></div>
+      <div class="payment-flow-wa" id="payment-flow-wa" style="display:none;">
+        <span class="payment-flow-wa-spinner"></span>
+        <svg class="payment-flow-wa-icon icon-check" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        <svg class="payment-flow-wa-icon icon-cross" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        <span id="payment-flow-wa-text">Отправка в WhatsApp...</span>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -2454,19 +2794,27 @@
   let editingBoxIndex = null;
   let currentDetailIndex = null;
   let selectedPaymentType = 'За аренду';
-  let companyName = 'МурБокс';
+  let companyName = 'Аренда';
   let kwhPrice = '';
   let showKopecks = false;
   let defaultBoxSplit = 'поровну';
+  let showDebtTransfersHistory = true;
+  let reportSendMethod = 'pdf';
+  let textReportTemplate = '📋 *Отчёт по оплате* — {компания}\n\nЗдравствуйте, *{имя}*!\n\n📦 Бокс: *{бокс}*\n\n✅ Оплачено всего: *{оплачено}*\n🏠 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n📊 Итого долг: *{долг}*\n\nСпасибо, что вы с нами! 🙏';
   let greenApiIdInstance = '';
   let greenApiToken = '';
   let autoSendOnPayment = true;
   let remindersEnabled = false;
   let reminderTime = '10:00';
-  let reminderTemplate = 'Здравствуйте, {имя}! Напоминаем, что {день} числа — день оплаты за бокс «{бокс}». Актуальный долг: {долг}. Спасибо, что вы с нами!';
+  let reminderTemplate = '👋 Здравствуйте, *{имя}*!\n\n📅 Сегодня, *{день} числа*, день оплаты за бокс «*{бокс}*» в *{компания}*.\n\n💰 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n📊 Итого к оплате: *{долг}*\n\nБудем рады видеть вас — оплатить можно любым удобным способом. Спасибо, что вы с нами! 🙏';
   let temporaryBoxesEnabled = false;
   let lastReminderDate = (function(){
     try{ return localStorage.getItem('murbox_last_reminder_date'); } catch(e){ return null; }
+  })();
+  let overdueNotificationsEnabled = false;
+  let overdueTemplate = '{иконка} *{заголовок}*\n\nЗдравствуйте, *{имя}*!\n\nПо боксу «*{бокс}*» в *{компания}* уже *{дней} дней* числится задолженность.\n\n💰 Текущий долг: *{долг}*\n\nПожалуйста, погасите его при первой возможности — если уже оплатили, извините за беспокойство! 🙏';
+  let lastOverdueCheckDate = (function(){
+    try{ return localStorage.getItem('murbox_last_overdue_check'); } catch(e){ return null; }
   })();
 
   function formatMoney(value){
@@ -2479,6 +2827,16 @@
     el.classList.add('active');
   }
 
+  function selectReportFormat(el){
+    document.querySelectorAll('#report-format-select .chip-option').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function updateReportFormatStatusBadge(){
+    const badge = document.getElementById('report-format-status-badge');
+    badge.textContent = reportSendMethod === 'text' ? 'Текст' : 'PDF';
+  }
+
   function openSettingsModal(){
     document.getElementById('input-company-name').value = companyName;
     document.getElementById('input-kwh-price').value = kwhPrice;
@@ -2486,10 +2844,20 @@
     document.getElementById('input-green-id').value = greenApiIdInstance;
     document.getElementById('input-green-token').value = greenApiToken;
     document.getElementById('input-auto-send').checked = autoSendOnPayment;
+    document.querySelectorAll('#report-format-select .chip-option').forEach(el =>
+      el.classList.toggle('active', el.dataset.value === reportSendMethod)
+    );
+    document.getElementById('input-text-report').value = textReportTemplate;
+    updateReportFormatStatusBadge();
     document.getElementById('input-reminders-enabled').checked = remindersEnabled;
     document.getElementById('input-reminder-time').value = reminderTime;
     document.getElementById('input-reminder-text').value = reminderTemplate;
     updateReminderStatusBadge();
+    document.getElementById('input-overdue-enabled').checked = overdueNotificationsEnabled;
+    document.getElementById('input-overdue-text').value = overdueTemplate;
+    updateOverdueStatusBadge();
+    document.getElementById('input-show-debt-transfers').checked = showDebtTransfersHistory;
+    updateDebtTransfersStatusBadge();
     document.getElementById('input-temporary-enabled').checked = temporaryBoxesEnabled;
     updateTemporaryStatusBadge();
     document.querySelectorAll('#settings-split-select .chip-option').forEach(el =>
@@ -2518,6 +2886,18 @@
     const badge = document.getElementById('reminder-status-badge');
     badge.textContent = remindersEnabled ? 'вкл' : 'выкл';
     badge.classList.toggle('connected', remindersEnabled);
+  }
+
+  function updateOverdueStatusBadge(){
+    const badge = document.getElementById('overdue-status-badge');
+    badge.textContent = overdueNotificationsEnabled ? 'вкл' : 'выкл';
+    badge.classList.toggle('connected', overdueNotificationsEnabled);
+  }
+
+  function updateDebtTransfersStatusBadge(){
+    const badge = document.getElementById('debt-transfers-status-badge');
+    badge.textContent = showDebtTransfersHistory ? 'видна' : 'скрыта';
+    badge.classList.toggle('connected', showDebtTransfersHistory);
   }
 
   function updateTemporaryStatusBadge(){
@@ -2586,7 +2966,10 @@
         companyName, kwhPrice, showKopecks, defaultBoxSplit,
         greenApiIdInstance, greenApiToken, autoSendOnPayment,
         remindersEnabled, reminderTime, reminderTemplate,
-        temporaryBoxesEnabled
+        temporaryBoxesEnabled,
+        overdueNotificationsEnabled, overdueTemplate,
+        showDebtTransfersHistory,
+        reportSendMethod, textReportTemplate
       },
       boxesData,
       contactsData,
@@ -2601,7 +2984,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `МурБокс_бэкап_${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `Аренда_бэкап_${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -2690,6 +3073,11 @@
     reminderTime = s.reminderTime || '10:00';
     reminderTemplate = s.reminderTemplate || reminderTemplate;
     temporaryBoxesEnabled = !!s.temporaryBoxesEnabled;
+    overdueNotificationsEnabled = !!s.overdueNotificationsEnabled;
+    overdueTemplate = s.overdueTemplate || overdueTemplate;
+    showDebtTransfersHistory = s.showDebtTransfersHistory !== undefined ? s.showDebtTransfersHistory : true;
+    reportSendMethod = s.reportSendMethod || 'pdf';
+    textReportTemplate = s.textReportTemplate || textReportTemplate;
 
     boxesData = data.boxesData || [];
     contactsData = data.contactsData || [];
@@ -2709,6 +3097,9 @@
     renderTemporaryList();
     updateWhatsappStatusBadge();
     updateReminderStatusBadge();
+    updateOverdueStatusBadge();
+    updateDebtTransfersStatusBadge();
+    updateReportFormatStatusBadge();
     updateTemporaryStatusBadge();
     updateTemporaryNavVisibility();
     closeSettingsModal();
@@ -2767,7 +3158,7 @@
     activityLog = [];
     temporaryBookings = [];
 
-    companyName = 'МурБокс';
+    companyName = 'Аренда';
     kwhPrice = '';
     showKopecks = false;
     defaultBoxSplit = 'поровну';
@@ -2776,8 +3167,13 @@
     autoSendOnPayment = true;
     remindersEnabled = false;
     reminderTime = '10:00';
-    reminderTemplate = 'Здравствуйте, {имя}! Напоминаем, что {день} числа — день оплаты за бокс «{бокс}». Актуальный долг: {долг}. Спасибо, что вы с нами!';
+    reminderTemplate = '👋 Здравствуйте, *{имя}*!\n\n📅 Сегодня, *{день} числа*, день оплаты за бокс «*{бокс}*» в *{компания}*.\n\n💰 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n📊 Итого к оплате: *{долг}*\n\nБудем рады видеть вас — оплатить можно любым удобным способом. Спасибо, что вы с нами! 🙏';
     temporaryBoxesEnabled = false;
+    overdueNotificationsEnabled = false;
+    overdueTemplate = '{иконка} *{заголовок}*\n\nЗдравствуйте, *{имя}*!\n\nПо боксу «*{бокс}*» в *{компания}* уже *{дней} дней* числится задолженность.\n\n💰 Текущий долг: *{долг}*\n\nПожалуйста, погасите его при первой возможности — если уже оплатили, извините за беспокойство! 🙏';
+    showDebtTransfersHistory = true;
+    reportSendMethod = 'pdf';
+    textReportTemplate = '📋 *Отчёт по оплате* — {компания}\n\nЗдравствуйте, *{имя}*!\n\n📦 Бокс: *{бокс}*\n\n✅ Оплачено всего: *{оплачено}*\n🏠 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n📊 Итого долг: *{долг}*\n\nСпасибо, что вы с нами! 🙏';
 
     cancelFullReset();
     updateCompanyNameDisplay(companyName);
@@ -2789,6 +3185,9 @@
     renderTemporaryList();
     updateWhatsappStatusBadge();
     updateReminderStatusBadge();
+    updateOverdueStatusBadge();
+    updateDebtTransfersStatusBadge();
+    updateReportFormatStatusBadge();
     updateTemporaryStatusBadge();
     updateTemporaryNavVisibility();
     updateStorageInfo();
@@ -2807,8 +3206,8 @@
       const base = await fetch('manifest.json').then(r => r.json());
       const manifest = {
         ...base,
-        name: (companyName || 'МурБокс') + ' — учёт боксов',
-        short_name: companyName || 'МурБокс'
+        name: (companyName || 'Аренда') + ' — учёт боксов',
+        short_name: companyName || 'Аренда'
       };
       const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
       let link = document.querySelector('link[rel="manifest"]');
@@ -2855,7 +3254,7 @@
     if(isAndroid){
       return 'На Android в Chrome: откройте меню «⋮» в правом верхнем углу → «Установить приложение». Если пункта нет — обновите Chrome и откройте страницу по HTTPS.';
     }
-    return 'На компьютере в Chrome: нажмите значок установки в адресной строке (⊕ / экран со стрелкой), либо «⋮» → «Установить МурБокс…».';
+    return 'На компьютере в Chrome: нажмите значок установки в адресной строке (⊕ / экран со стрелкой), либо «⋮» → «Установить приложение Аренда…».';
   }
 
   async function installApp(){
@@ -2877,6 +3276,7 @@
     const name = document.getElementById('input-company-name').value.trim();
     const price = document.getElementById('input-kwh-price').value.trim();
     const kopecks = document.getElementById('input-show-kopecks').checked;
+    const showTransfersOn = document.getElementById('input-show-debt-transfers').checked;
     const splitEl = document.querySelector('#settings-split-select .chip-option.active');
     const greenId = document.getElementById('input-green-id').value.trim();
     const greenToken = document.getElementById('input-green-token').value.trim();
@@ -2885,6 +3285,10 @@
     const remTime = document.getElementById('input-reminder-time').value || '10:00';
     const remText = document.getElementById('input-reminder-text').value.trim();
     const temporaryOn = document.getElementById('input-temporary-enabled').checked;
+    const overdueOn = document.getElementById('input-overdue-enabled').checked;
+    const overdueText = document.getElementById('input-overdue-text').value.trim();
+    const reportFormatEl = document.querySelector('#report-format-select .chip-option.active');
+    const textReportText = document.getElementById('input-text-report').value.trim();
 
     if(!name){
       document.getElementById('input-company-name').focus();
@@ -2894,6 +3298,7 @@
     companyName = name;
     kwhPrice = price;
     showKopecks = kopecks;
+    showDebtTransfersHistory = showTransfersOn;
     defaultBoxSplit = splitEl ? splitEl.dataset.value : 'поровну';
     greenApiIdInstance = greenId;
     greenApiToken = greenToken;
@@ -2902,8 +3307,15 @@
     reminderTime = remTime;
     reminderTemplate = remText || reminderTemplate;
     temporaryBoxesEnabled = temporaryOn;
+    overdueNotificationsEnabled = overdueOn;
+    overdueTemplate = overdueText || overdueTemplate;
+    reportSendMethod = reportFormatEl ? reportFormatEl.dataset.value : 'pdf';
+    textReportTemplate = textReportText || textReportTemplate;
     updateWhatsappStatusBadge();
     updateReminderStatusBadge();
+    updateOverdueStatusBadge();
+    updateDebtTransfersStatusBadge();
+    updateReportFormatStatusBadge();
     updateTemporaryStatusBadge();
     updateTemporaryNavVisibility();
     setupManifest();
@@ -3112,6 +3524,7 @@
 
   /* ---------- HOME REPORT ---------- */
   function renderReport(){
+    updateDebtStreaks();
     persistData();
     const now = new Date();
     let income = 0;
@@ -3169,7 +3582,6 @@
             <h4>${box.name}</h4>
             <div class="box-card-price">${box.price ? box.price : '—'} / ${box.period === 'день' ? 'сутки' : 'мес.'}</div>
           </div>
-          ${box.isTemporary ? `<span class="tag-free">Временный</span>` : ''}
           <div class="box-card-debts">
             <div class="box-card-debt-item">
               <span class="box-card-debt-label">${rentLabel}</span>
@@ -3212,8 +3624,6 @@
     document.getElementById('input-box-first-payment').value = '';
     document.getElementById('input-box-meter').value = '';
     document.getElementById('input-box-desc').value = '';
-    document.getElementById('field-box-temporary').style.display = temporaryBoxesEnabled ? 'block' : 'none';
-    document.getElementById('input-box-temporary').checked = false;
     setBoxSplitUI(defaultBoxSplit);
     document.getElementById('btn-delete-box').style.display = 'none';
     document.getElementById('box-modal').classList.add('open');
@@ -3230,8 +3640,6 @@
     document.getElementById('input-box-first-payment').value = box.firstPaymentDate || '';
     document.getElementById('input-box-meter').value = box.meterStart || '';
     document.getElementById('input-box-desc').value = box.desc;
-    document.getElementById('field-box-temporary').style.display = temporaryBoxesEnabled ? 'block' : 'none';
-    document.getElementById('input-box-temporary').checked = !!box.isTemporary;
     setBoxSplitUI(box.paymentSplit || 'поровну');
     document.getElementById('btn-delete-box').style.display = 'flex';
     closeBoxDetailModal();
@@ -3250,7 +3658,6 @@
     const firstPaymentDate = document.getElementById('input-box-first-payment').value;
     const meterRaw = document.getElementById('input-box-meter').value.trim();
     const desc = document.getElementById('input-box-desc').value.trim();
-    const isTemporary = temporaryBoxesEnabled ? document.getElementById('input-box-temporary').checked : undefined;
 
     if(!name){
       document.getElementById('input-box-name').focus();
@@ -3264,7 +3671,6 @@
       const box = boxesData[editingBoxIndex];
       box.name = name; box.price = price; box.period = period; box.payDay = payDay; box.desc = desc;
       box.firstPaymentDate = firstPaymentDate;
-      if(isTemporary !== undefined) box.isTemporary = isTemporary;
       box.meterStart = meterStart;
       box.paymentSplit = selectedBoxSplit;
       if(box.meterCurrent === undefined || box.meterCurrent === null){
@@ -3273,7 +3679,6 @@
     } else {
       boxesData.push({
         name, price, period, payDay, desc, firstPaymentDate,
-        isTemporary: !!isTemporary,
         debtRent:0, payments:[], clients:[],
         meterStart: meterStart, meterCurrent: meterStart,
         paymentSplit: selectedBoxSplit
@@ -3441,26 +3846,140 @@
     showToast('Бронь удалена');
   }
 
-  function quickExtendTemporary(index){
-    const b = temporaryBookings[index];
-    if(!b) return;
-    const unit = b.durationType === 'сутки' ? 'сут.' : 'ч.';
-    const current = parseFloat(b.durationValue) || 0;
-    b.durationValue = String(current + 1);
-    logActivity(`Продлена временная бронь «${b.name}» до ${b.durationValue} ${unit}`);
-    renderTemporaryList();
-    renderReport();
-    showToast(`Продлено до ${b.durationValue} ${unit}`);
+  let tempExtendIndex = null;
+  let selectedTempExtendUnit = 'часы';
+
+  function selectTempExtendUnit(el){
+    document.querySelectorAll('#temp-extend-unit-select .chip-option').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    selectedTempExtendUnit = el.dataset.value;
   }
 
-  function completeTemporaryBooking(index){
+  function openTempExtendModal(index){
+    tempExtendIndex = index;
     const b = temporaryBookings[index];
     if(!b) return;
-    b.status = 'завершена';
-    logActivity(`Завершена временная бронь «${b.name}»`);
+    document.getElementById('temp-extend-name').textContent = b.name;
+    selectTempExtendUnit(document.querySelector(`#temp-extend-unit-select .chip-option[data-value="${b.durationType || 'часы'}"]`));
+    document.getElementById('input-temp-extend-qty').value = '1';
+    document.getElementById('input-temp-extend-amount').value = '';
+    document.getElementById('temp-extend-modal').classList.add('open');
+  }
+
+  function closeTempExtendModal(){
+    document.getElementById('temp-extend-modal').classList.remove('open');
+  }
+
+  function confirmExtendTemporary(){
+    const b = temporaryBookings[tempExtendIndex];
+    if(!b) return;
+
+    const qty = parseFloat(document.getElementById('input-temp-extend-qty').value) || 0;
+    if(qty <= 0){
+      document.getElementById('input-temp-extend-qty').focus();
+      return;
+    }
+    const customRaw = document.getElementById('input-temp-extend-amount').value.trim();
+    const unitLabel = selectedTempExtendUnit === 'сутки' ? 'сут.' : 'ч.';
+
+    b.durationType = selectedTempExtendUnit;
+    b.durationValue = (parseFloat(b.durationValue) || 0) + qty;
+
+    let amountNum = 0;
+    let amountDisplay = '';
+    if(customRaw){
+      amountNum = parseFloat(customRaw.replace(/[^0-9.]/g, '')) || 0;
+      amountDisplay = customRaw;
+    } else {
+      const rate = parseFloat(String(selectedTempExtendUnit === 'сутки' ? b.priceDay : b.priceHour).replace(/[^0-9.]/g, '')) || 0;
+      amountNum = rate * qty;
+      amountDisplay = amountNum ? amountNum + ' ₽' : '';
+    }
+
+    if(amountNum > 0){
+      b.payments = b.payments || [];
+      b.payments.push({ amount: amountDisplay, date: new Date().toLocaleDateString('ru-RU') });
+    }
+
+    logActivity(`Продлена временная бронь «${b.name}» на ${qty} ${unitLabel}${amountNum ? ' — ' + formatMoney(amountNum) : ''}`);
+
+    closeTempExtendModal();
     renderTemporaryList();
     renderReport();
-    showToast('Бронь завершена');
+
+    if(amountNum > 0){
+      showPaymentFlow({
+        amount: formatMoney(amountNum),
+        label: `Продление · ${b.name} · ${qty} ${unitLabel}`,
+        sendPromise: tempNotifyPromise(b, 'extend', { amount: amountNum, qty, unitLabel })
+      });
+    } else {
+      const notifyPromise = tempNotifyPromise(b, 'extend', { amount: 0, qty, unitLabel });
+      if(notifyPromise){
+        notifyPromise.then(result => {
+          showToast(result.ok ? `Продлено на ${qty} ${unitLabel} · клиент уведомлён` : `Продлено на ${qty} ${unitLabel}`);
+        });
+      } else {
+        showToast(`Продлено на ${qty} ${unitLabel}`);
+      }
+    }
+  }
+
+  let tempCompleteIndex = null;
+
+  function openTempCompleteModal(index){
+    tempCompleteIndex = index;
+    const b = temporaryBookings[index];
+    if(!b) return;
+    document.getElementById('temp-complete-name').textContent = b.name;
+    const rate = parseFloat(String(b.durationType === 'сутки' ? b.priceDay : b.priceHour).replace(/[^0-9.]/g, '')) || 0;
+    const qty = parseFloat(b.durationValue) || 0;
+    const suggested = rate && qty ? rate * qty : '';
+    document.getElementById('input-temp-complete-amount').value = suggested ? suggested + ' ₽' : '';
+    document.getElementById('temp-complete-modal').classList.add('open');
+  }
+
+  function closeTempCompleteModal(){
+    document.getElementById('temp-complete-modal').classList.remove('open');
+  }
+
+  function finishTemporaryBooking(paid){
+    const b = temporaryBookings[tempCompleteIndex];
+    if(!b) return;
+
+    const raw = document.getElementById('input-temp-complete-amount').value.trim();
+    const amountNum = parseFloat(raw.replace(/[^0-9.]/g, '')) || 0;
+
+    b.status = 'завершена';
+    b.timerStoppedAt = new Date().toISOString();
+
+    if(paid && amountNum > 0){
+      b.payments = b.payments || [];
+      b.payments.push({ amount: raw, date: new Date().toLocaleDateString('ru-RU') });
+    }
+
+    logActivity(`Завершена временная бронь «${b.name}» — ${paid ? 'оплачено' + (amountNum ? ' ' + formatMoney(amountNum) : '') : 'не оплачено'}`);
+
+    closeTempCompleteModal();
+    renderTemporaryList();
+    renderReport();
+
+    if(paid && amountNum > 0){
+      showPaymentFlow({
+        amount: formatMoney(amountNum),
+        label: `Завершено · ${b.name}`,
+        sendPromise: tempNotifyPromise(b, 'complete', { paid: true, amount: amountNum })
+      });
+    } else {
+      const notifyPromise = tempNotifyPromise(b, 'complete', { paid: false, amount: 0 });
+      if(notifyPromise){
+        notifyPromise.then(result => {
+          showToast(result.ok ? 'Бронь завершена без оплаты · клиент уведомлён' : 'Бронь завершена без оплаты');
+        });
+      } else {
+        showToast(paid ? 'Бронь завершена' : 'Бронь завершена без оплаты');
+      }
+    }
   }
 
   function renderTemporaryList(){
@@ -3488,20 +4007,31 @@
           ${b.phone ? `<div class="dims">${b.phone}</div>` : ''}
           ${(b.priceDay || b.priceHour) ? `<div class="dims">${b.priceDay ? b.priceDay + '/сутки' : ''}${b.priceDay && b.priceHour ? ' · ' : ''}${b.priceHour ? b.priceHour + '/час' : ''}</div>` : ''}
           ${(b.startDate || b.startTime) ? `<div class="dims">Начало — ${b.startDate ? new Date(b.startDate + 'T00:00:00').toLocaleDateString('ru-RU') : ''}${b.startTime ? ', ' + b.startTime : ''}</div>` : ''}
-          <div class="temp-timer" id="temp-timer-${i}"></div>
+          <div class="temp-timer-row" onclick="event.stopPropagation();">
+            <div class="temp-timer" id="temp-timer-${i}"></div>
+            <label class="switch" title="Обратный отсчёт">
+              <input type="checkbox" ${b.timerMode === 'обратный' ? 'checked' : ''} onchange="event.stopPropagation(); toggleTempTimerMode(${i}, this.checked)">
+              <span class="slider"></span>
+            </label>
+          </div>
           <div class="temp-card-expand">
             <div class="temp-card-expand-inner">
-              <div class="toggle-row" style="grid-column: 1 / -1;" onclick="event.stopPropagation();">
-                <span class="toggle-desc">Обратный отсчёт (до конца срока) вместо обычного (с начала)</span>
-                <label class="switch">
-                  <input type="checkbox" ${b.timerMode === 'обратный' ? 'checked' : ''} onchange="event.stopPropagation(); toggleTempTimerMode(${i}, this.checked)">
-                  <span class="slider"></span>
-                </label>
-              </div>
-              <button type="button" class="btn-ghost" onclick="event.stopPropagation(); openEditTemporary(${i})">Изменить</button>
-              <button type="button" class="btn-ghost" onclick="event.stopPropagation(); quickExtendTemporary(${i})">Продлить</button>
-              <button type="button" class="btn-ghost" onclick="event.stopPropagation(); openTempPaymentModal(${i})">Оплатить</button>
-              <button type="button" class="btn-ghost" onclick="event.stopPropagation(); completeTemporaryBooking(${i})">Завершить</button>
+              <button type="button" class="btn-temp-action tone-neutral" onclick="event.stopPropagation(); openEditTemporary(${i})">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                <span>Изменить</span>
+              </button>
+              <button type="button" class="btn-temp-action tone-sage" onclick="event.stopPropagation(); openTempExtendModal(${i})">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/><path d="M12 2v2"/></svg>
+                <span>Продлить</span>
+              </button>
+              <button type="button" class="btn-temp-action tone-gold" onclick="event.stopPropagation(); openTempPaymentModal(${i})">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+                <span>Оплатить</span>
+              </button>
+              <button type="button" class="btn-temp-action tone-red" onclick="event.stopPropagation(); openTempCompleteModal(${i})">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <span>Завершить</span>
+              </button>
             </div>
           </div>
         </div>`;
@@ -3551,6 +4081,14 @@
       if(!b.startDate){ el.textContent = ''; return; }
       const start = new Date(b.startDate + 'T' + (b.startTime || '00:00') + ':00');
       if(isNaN(start.getTime())){ el.textContent = ''; return; }
+
+      if(b.status === 'завершена'){
+        if(!b.timerStoppedAt) b.timerStoppedAt = new Date().toISOString();
+        const stopTime = new Date(b.timerStoppedAt);
+        el.classList.remove('overdue');
+        el.textContent = 'Завершено — ' + formatDurationParts(Math.max(0, stopTime - start));
+        return;
+      }
 
       if(b.timerMode === 'обратный'){
         const qty = parseFloat(b.durationValue) || 0;
@@ -3605,7 +4143,11 @@
     closeTempPaymentModal();
     renderTemporaryList();
     renderReport();
-    showToast('Оплата записана');
+    showPaymentFlow({
+      amount: formatMoney(amountNum),
+      label: `Временная бронь · ${b.name}`,
+      sendPromise: tempNotifyPromise(b, 'payment', { amount: amountNum })
+    });
   }
 
   /* ---------- METER READING ---------- */
@@ -3897,7 +4439,19 @@
     renderBoxes();
     renderReport();
     logActivity(`Платёж «${selectedPaymentType}» — бокс «${box.name}»`, amountNum);
-    notifyClientsAfterPayment(box, { type: selectedPaymentType, amount: amountNum });
+
+    const willNotify = autoSendOnPayment && greenApiIdInstance && greenApiToken &&
+      (box.clients || []).some(fio => {
+        const c = contactsData.find(x => x.fio === fio);
+        return c && c.phone;
+      });
+    const notifyPromise = notifyClientsAfterPayment(box, { type: selectedPaymentType, amount: amountNum });
+
+    showPaymentFlow({
+      amount: formatMoney(amountNum),
+      label: `Бокс «${box.name}» · ${selectedPaymentType}`,
+      sendPromise: willNotify ? notifyPromise : null
+    });
   }
 
   /* ---------- SEARCH ---------- */
@@ -4039,6 +4593,9 @@
     currentContactDetailIndex = index;
     const c = contactsData[index];
 
+    renderDebtTransfers(c);
+    document.getElementById('detail-transfers-section').classList.remove('open');
+    document.getElementById('detail-transfers-section').style.display = showDebtTransfersHistory ? 'block' : 'none';
     document.getElementById('cdetail-name').textContent = c.fio;
     document.getElementById('cdetail-paid').textContent = formatMoney(getContactPaidTotal(c));
 
@@ -4097,7 +4654,7 @@
       label.textContent = 'У контакта не указан телефон';
     } else {
       btn.disabled = false;
-      label.textContent = 'Отправить PDF-отчёт в WhatsApp';
+      label.textContent = reportSendMethod === 'text' ? 'Отправить текстовый отчёт в WhatsApp' : 'Отправить PDF-отчёт в WhatsApp';
     }
   }
 
@@ -4137,6 +4694,230 @@
     renderBoxes();
     renderReport();
     showToast('Контакт удалён');
+  }
+
+  /* ---------- DEBT TRANSFER (перенос долга на новую дату) ---------- */
+  function renderDebtTransfers(contact){
+    const listEl = document.getElementById('detail-transfers-list');
+    const emptyEl = document.getElementById('detail-transfers-empty');
+    const countEl = document.getElementById('detail-transfers-count');
+    if(!listEl || !emptyEl || !countEl) return;
+
+    const transfers = contact.debtTransfers || [];
+    listEl.innerHTML = '';
+
+    transfers.slice().reverse().forEach(t => {
+      const dateLabel = t.date ? new Date(t.date + 'T00:00:00').toLocaleDateString('ru-RU') : '';
+      const row = document.createElement('div');
+      row.className = 'history-item';
+      row.innerHTML = `
+        <div>
+          <div class="history-type">Перенос на ${dateLabel}${t.time ? ', ' + t.time : ''}</div>
+          <div class="history-date">${t.notified ? 'Клиент уведомлён' : 'Ожидает наступления даты'}${t.note ? ' · ' + t.note : ''}</div>
+        </div>`;
+      listEl.appendChild(row);
+    });
+
+    emptyEl.style.display = transfers.length ? 'none' : 'block';
+    countEl.textContent = transfers.length;
+  }
+
+  function openDeferDebtModal(){
+    const c = contactsData[currentContactDetailIndex];
+    if(!c) return;
+    document.getElementById('defer-debt-name').textContent = c.fio;
+    const now = new Date();
+    document.getElementById('input-defer-date').value = localDateStr(now);
+    document.getElementById('input-defer-time').value =
+      String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('input-defer-note').value = '';
+    document.getElementById('defer-debt-modal').classList.add('open');
+  }
+
+  function closeDeferDebtModal(){
+    document.getElementById('defer-debt-modal').classList.remove('open');
+  }
+
+  function confirmDeferDebt(){
+    const c = contactsData[currentContactDetailIndex];
+    if(!c) return;
+    const date = document.getElementById('input-defer-date').value;
+    const time = document.getElementById('input-defer-time').value;
+    const note = document.getElementById('input-defer-note').value.trim();
+
+    if(!date){
+      document.getElementById('input-defer-date').focus();
+      return;
+    }
+
+    c.debtTransfers = c.debtTransfers || [];
+    c.debtTransfers.push({ date, time, note, createdAt: new Date().toISOString(), notified: false });
+
+    logActivity(`Перенос долга — ${c.fio} на ${new Date(date + 'T00:00:00').toLocaleDateString('ru-RU')}${time ? ', ' + time : ''}`);
+
+    closeDeferDebtModal();
+    renderDebtTransfers(c);
+    renderReport();
+    showToast('Долг перенесён на новую дату');
+  }
+
+  function buildTempBookingMessage(booking, kind, extra){
+    const company = companyName || 'Аренда';
+    if(kind === 'payment'){
+      return `✅ *Оплата принята*\n\nЗдравствуйте, *${booking.name}*!\n\nПолучен платёж: *${formatMoney(extra.amount)}* за временную бронь в *${company}*.\n\nСпасибо, что вы с нами! 🙏`;
+    }
+    if(kind === 'extend'){
+      const amountLine = extra.amount ? `\n💰 Оплата за продление: *${formatMoney(extra.amount)}*` : '';
+      return `⏳ *Бронь продлена*\n\nЗдравствуйте, *${booking.name}*!\n\nВаша временная бронь в *${company}* продлена на *${extra.qty} ${extra.unitLabel}*.${amountLine}\n\nСпасибо, что вы с нами! 🙏`;
+    }
+    if(kind === 'complete'){
+      const statusLine = extra.paid
+        ? `✅ Оплата получена: *${formatMoney(extra.amount)}*`
+        : `⚠️ Оплата ещё не поступила`;
+      return `🏁 *Бронь завершена*\n\nЗдравствуйте, *${booking.name}*!\n\nВаша временная бронь в *${company}* завершена.\n\n${statusLine}\n\nСпасибо, что вы с нами! 🙏`;
+    }
+    if(kind === 'overdue'){
+      return `🚨 *Просрочка временной брони*\n\nЗдравствуйте, *${booking.name}*!\n\nСрок вашей временной брони в *${company}* истёк, но бронь всё ещё не завершена и не оплачена.\n\nПожалуйста, свяжитесь с нами как можно скорее. 🙏`;
+    }
+    return '';
+  }
+
+  async function sendTempBookingNotification(booking, message){
+    if(!greenApiIdInstance || !greenApiToken || !booking.phone) return { ok:false };
+    try{
+      const phoneDigits = booking.phone.replace(/\D/g, '');
+      const chatId = phoneDigits + '@c.us';
+      const url = `https://api.green-api.com/waInstance${greenApiIdInstance}/sendMessage/${greenApiToken}`;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chatId, message })
+      });
+      return { ok: resp.ok };
+    } catch(err){
+      console.error(err);
+      return { ok:false };
+    }
+  }
+
+  function tempNotifyPromise(booking, kind, extra){
+    const willSend = autoSendOnPayment && greenApiIdInstance && greenApiToken && booking.phone;
+    if(!willSend) return null;
+    return sendTempBookingNotification(booking, buildTempBookingMessage(booking, kind, extra)).then(result => ({
+      ok: result.ok,
+      text: result.ok ? 'Отправлено клиенту' : 'Не удалось отправить'
+    }));
+  }
+
+  function buildDebtTransferMessage(contact, transfer){
+    const debtText = formatMoney(Math.abs(contactTotalDebt(contact)));
+    const note = transfer && transfer.note ? `\n\n📝 Напоминаем: «${transfer.note}»` : '';
+    return `📅 *Напоминание о переносе*\n\nЗдравствуйте, *${contact.fio}*!\n\nНаступила дата, на которую был перенесён платёж в *${companyName || 'Аренда'}*.${note}\n\n💰 Актуальный долг: *${debtText}*\n\nПожалуйста, произведите оплату при первой возможности. Спасибо, что вы с нами! 🙏`;
+  }
+
+  async function sendDebtTransferNotification(contact, transfer){
+    if(!greenApiIdInstance || !greenApiToken || !contact.phone) return { ok:false };
+    try{
+      const phoneDigits = contact.phone.replace(/\D/g, '');
+      const chatId = phoneDigits + '@c.us';
+      const message = buildDebtTransferMessage(contact, transfer);
+      const url = `https://api.green-api.com/waInstance${greenApiIdInstance}/sendMessage/${greenApiToken}`;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chatId, message })
+      });
+      return { ok: resp.ok };
+    } catch(err){
+      console.error(err);
+      return { ok:false };
+    }
+  }
+
+  function checkDebtTransfers(force){
+    if(!greenApiIdInstance || !greenApiToken){
+      if(force) showToast('Сначала подключите WhatsApp в настройках');
+      return;
+    }
+
+    const now = new Date();
+    const due = [];
+
+    contactsData.forEach(contact => {
+      (contact.debtTransfers || []).forEach(t => {
+        if(t.notified || !t.date) return;
+        const when = new Date(t.date + 'T' + (t.time || '00:00') + ':00');
+        if(isNaN(when.getTime()) || when > now) return;
+        due.push({ contact, transfer: t });
+      });
+    });
+
+    if(!due.length){
+      if(force) showToast('Наступивших переносов нет');
+      return;
+    }
+
+    const targets = due.filter(d => contactTotalDebt(d.contact) > 0 && d.contact.phone);
+    due.forEach(d => { d.transfer.notified = true; });
+
+    if(!targets.length){
+      renderReport();
+      if(force) showToast('Долг по перенесённым датам уже погашен');
+      return;
+    }
+
+    showToast(`Отправка напоминаний о переносе: ${targets.length}`);
+    Promise.all(targets.map(t => sendDebtTransferNotification(t.contact, t.transfer))).then(results => {
+      const success = results.filter(r => r.ok).length;
+      showToast(`Отправлено ${success} из ${targets.length}`);
+      logActivity(`Отправлены напоминания о переносе долга: ${success} из ${targets.length}`);
+      renderReport();
+      if(currentContactDetailIndex !== null && contactsData[currentContactDetailIndex]){
+        renderDebtTransfers(contactsData[currentContactDetailIndex]);
+      }
+    });
+  }
+
+  /* ---------- TEMPORARY BOOKING OVERDUE ---------- */
+  function checkTemporaryOverdue(force){
+    if(!greenApiIdInstance || !greenApiToken){
+      if(force) showToast('Сначала подключите WhatsApp в настройках');
+      return;
+    }
+
+    const now = new Date();
+    const targets = [];
+
+    temporaryBookings.forEach(b => {
+      if(b.status === 'завершена') return;
+      if(b.overdueNotifiedAt) return;
+      if(!b.startDate) return;
+      const qty = parseFloat(b.durationValue) || 0;
+      if(!qty) return;
+      const start = new Date(b.startDate + 'T' + (b.startTime || '00:00') + ':00');
+      if(isNaN(start.getTime())) return;
+      const durationMs = qty * (b.durationType === 'сутки' ? 86400000 : 3600000);
+      const end = new Date(start.getTime() + durationMs);
+      if(now <= end) return;
+      if(!b.phone) return;
+      targets.push(b);
+    });
+
+    if(!targets.length){
+      if(force) showToast('Просроченных временных броней нет');
+      return;
+    }
+
+    targets.forEach(b => { b.overdueNotifiedAt = new Date().toISOString(); });
+
+    showToast(`Отправка уведомлений о просрочке: ${targets.length}`);
+    Promise.all(targets.map(b => sendTempBookingNotification(b, buildTempBookingMessage(b, 'overdue')))).then(results => {
+      const success = results.filter(r => r.ok).length;
+      showToast(`Отправлено ${success} из ${targets.length}`);
+      logActivity(`Отправлены уведомления о просрочке временных броней: ${success} из ${targets.length}`);
+      renderReport();
+      renderTemporaryList();
+    });
   }
 
   /* ---------- CONTACT AMOUNT (debt / payment) ---------- */
@@ -4199,12 +4980,20 @@
     renderContacts();
     renderReport();
 
-    if(contactAmountMode === 'payment' && autoSendOnPayment && greenApiIdInstance && greenApiToken && contact.phone){
-      showToast(`Отправка PDF-отчёта: ${contact.fio}`);
-      sendReportToContact(contact, { type: 'За ' + categoryLabel, amount: amountNum }).then(result => {
-        showToast(result.ok ? `PDF-отчёт отправлен: ${contact.fio}` : 'Не удалось отправить PDF-отчёт');
-      });
-    }
+    const willSend = autoSendOnPayment && greenApiIdInstance && greenApiToken && contact.phone;
+    const paymentLabel = contactAmountMode === 'debt' ? 'Долг за ' + categoryLabel : 'За ' + categoryLabel;
+    const sendPromise = willSend
+      ? sendReportToContact(contact, { type: paymentLabel, amount: amountNum, kind: contactAmountMode === 'debt' ? 'debt' : 'payment' }).then(result => ({
+          ok: result.ok,
+          text: result.ok ? 'Отправлено клиенту' : 'Не удалось отправить'
+        }))
+      : null;
+
+    showPaymentFlow({
+      amount: formatMoney(amountNum),
+      label: `${contact.fio} · ${contactAmountMode === 'debt' ? 'начислен долг' : 'платёж'} (${categoryLabel})`,
+      sendPromise
+    });
   }
 
   /* ---------- TOAST ---------- */
@@ -4219,6 +5008,48 @@
     toast.classList.add('show');
     clearTimeout(window.__toastTimeout);
     window.__toastTimeout = setTimeout(() => toast.classList.remove('show'), duration || 3500);
+  }
+
+  /* ---------- PAYMENT FLOW ANIMATION ---------- */
+  // Shows a centered animated card with the amount, then (if a WhatsApp send
+  // is actually happening) tracks its progress live: spinner -> success/fail.
+  let paymentFlowHideTimeout = null;
+
+  function showPaymentFlow({ amount, label, sendPromise }){
+    const overlay = document.getElementById('payment-flow-overlay');
+    const waRow = document.getElementById('payment-flow-wa');
+    const waText = document.getElementById('payment-flow-wa-text');
+
+    clearTimeout(paymentFlowHideTimeout);
+    document.getElementById('payment-flow-amount').textContent = amount;
+    document.getElementById('payment-flow-label').textContent = label || '';
+
+    waRow.className = 'payment-flow-wa';
+    overlay.classList.remove('open');
+    void overlay.offsetWidth; // restart the pop-in animation even if triggered twice in a row
+    overlay.classList.add('open');
+
+    if(sendPromise){
+      waRow.style.display = 'flex';
+      waRow.classList.add('sending');
+      waText.textContent = 'Отправка в WhatsApp...';
+
+      sendPromise.then(result => {
+        const ok = !!(result && result.ok);
+        waRow.classList.remove('sending');
+        waRow.classList.add(ok ? 'success' : 'fail');
+        waText.textContent = (result && result.text) || (ok ? 'Отправлено клиенту' : 'Не удалось отправить');
+        paymentFlowHideTimeout = setTimeout(() => overlay.classList.remove('open'), 1600);
+      }).catch(() => {
+        waRow.classList.remove('sending');
+        waRow.classList.add('fail');
+        waText.textContent = 'Не удалось отправить';
+        paymentFlowHideTimeout = setTimeout(() => overlay.classList.remove('open'), 1600);
+      });
+    } else {
+      waRow.style.display = 'none';
+      paymentFlowHideTimeout = setTimeout(() => overlay.classList.remove('open'), 1200);
+    }
   }
 
   /* ---------- WHATSAPP PDF REPORT (Green API) ---------- */
@@ -4273,167 +5104,131 @@
 
     const pageW = doc.internal.pageSize.getWidth();
     const pageH = doc.internal.pageSize.getHeight();
-    const marginX = 14;
+    const marginX = 16;
     const contentW = pageW - marginX * 2;
     const footerLineY = pageH - 16;
 
-    /* ---- Brand header bar ---- */
-    doc.setFillColor(...C.gold);
-    doc.rect(0, 0, pageW, 30, 'F');
-    doc.setFont('DejaVuSans', 'bold');
-    doc.setFontSize(17);
-    doc.setTextColor(255,255,255);
-    doc.text(companyName || 'МурБокс', marginX, 15);
-    doc.setFont('DejaVuSans', 'normal');
-    doc.setFontSize(10.5);
-    doc.text('Отчёт по клиенту', marginX, 22);
-    doc.setFontSize(8.5);
-    doc.text(new Date().toLocaleDateString('ru-RU'), pageW - marginX, 15, { align: 'right' });
-
-    let y = 42;
-
-    /* ---- Client info card ---- */
-    const boxNames = getContactBoxNames(contact);
-    const infoLines = [['ФИО', contact.fio]];
-    if(contact.phone) infoLines.push(['Телефон', contact.phone]);
-    if(contact.address) infoLines.push(['Адрес', contact.address]);
-    infoLines.push(['Боксы', boxNames.length ? boxNames.join(', ') : 'не привязан']);
-
-    const infoPad = 6;
-    const infoLineH = 6.4;
-    const infoCardH = infoPad * 2 + infoLines.length * infoLineH - 2;
-
-    doc.setFillColor(...C.cream);
-    doc.setDrawColor(...C.line);
-    doc.setLineWidth(0.4);
-    doc.roundedRect(marginX, y, contentW, infoCardH, 3, 3, 'FD');
-
-    let infoY = y + infoPad + 3;
-    doc.setFontSize(10);
-    infoLines.forEach(([label, value]) => {
-      doc.setFont('DejaVuSans', 'bold');
-      doc.setTextColor(...C.inkSoft);
-      doc.text(label + ':', marginX + 5, infoY);
-      doc.setFont('DejaVuSans', 'normal');
-      doc.setTextColor(...C.ink);
-      doc.text(pdfFitText(doc, value, contentW - 42), marginX + 32, infoY);
-      infoY += infoLineH;
-    });
-
-    y += infoCardH + 10;
-
-    /* ---- Debt summary ---- */
-    const total = contactTotalDebt(contact);
-    const summaryRows = [
-      ['Оплачено всего', formatMoney(getContactPaidTotal(contact))],
-      ['Долг за аренду', formatMoney(Math.abs(contact.debtRent || 0)) + (contact.debtRent < 0 ? ' (переплата)' : '')],
-      ['Долг за свет', formatMoney(Math.abs(contact.debtLight || 0)) + (contact.debtLight < 0 ? ' (переплата)' : '')]
-    ];
-
-    doc.setFont('DejaVuSans', 'bold');
-    doc.setFontSize(11.5);
-    doc.setTextColor(...C.ink);
-    doc.text('Баланс', marginX, y);
-    y += 6;
-
-    const rowH = 8;
-    summaryRows.forEach((row, i) => {
-      const rowY = y + i * rowH;
-      doc.setFillColor(...(i % 2 === 0 ? C.white : C.rowAlt));
-      doc.setDrawColor(...C.line);
-      doc.rect(marginX, rowY, contentW, rowH, 'FD');
-      doc.setFont('DejaVuSans', 'normal');
-      doc.setFontSize(10);
-      doc.setTextColor(...C.inkSoft);
-      doc.text(row[0], marginX + 4, rowY + rowH / 2 + 1.2);
-      doc.setTextColor(...C.ink);
-      doc.text(row[1], marginX + contentW - 4, rowY + rowH / 2 + 1.2, { align: 'right' });
-    });
-    y += summaryRows.length * rowH;
-
-    const totalRowH = rowH + 1;
-    doc.setFillColor(...C.gold);
-    doc.rect(marginX, y, contentW, totalRowH, 'F');
-    doc.setFont('DejaVuSans', 'bold');
-    doc.setFontSize(10.5);
-    doc.setTextColor(255,255,255);
-    doc.text('Итого долг', marginX + 4, y + totalRowH / 2 + 1.2);
-    doc.text(formatMoney(Math.abs(total)) + (total < 0 ? ' (переплата)' : ''), marginX + contentW - 4, y + totalRowH / 2 + 1.2, { align: 'right' });
-
-    y += totalRowH + 12;
-
-    /* ---- Payment history table ---- */
-    doc.setFont('DejaVuSans', 'bold');
-    doc.setFontSize(11.5);
-    doc.setTextColor(...C.ink);
-    doc.text('История платежей', marginX, y);
-    y += 7;
-
-    const columns = [
-      { label: 'Дата', width: 28, align: 'left' },
-      { label: 'Тип', width: 42, align: 'left' },
-      { label: 'Бокс', width: contentW - 28 - 42 - 40, align: 'left' },
-      { label: 'Сумма', width: 40, align: 'right' }
-    ];
-
-    function drawTableHeader(yPos){
-      doc.setFillColor(...C.goldDeep);
-      doc.rect(marginX, yPos, contentW, 8, 'F');
-      doc.setFont('DejaVuSans', 'bold');
-      doc.setFontSize(9.5);
-      doc.setTextColor(255,255,255);
-      let colX = marginX;
-      columns.forEach(col => {
-        const textX = col.align === 'right' ? colX + col.width - 3 : colX + 3;
-        doc.text(col.label, textX, yPos + 5.5, { align: col.align });
-        colX += col.width;
-      });
-      return yPos + 8;
+    function newPage(){
+      doc.addPage();
+      return 24;
     }
 
-    y = drawTableHeader(y);
+    /* ---- Simple header ---- */
+    doc.setFont('DejaVuSans', 'bold');
+    doc.setFontSize(19);
+    doc.setTextColor(...C.ink);
+    doc.text(companyName || 'Аренда', marginX, 22);
+    doc.setFont('DejaVuSans', 'normal');
+    doc.setFontSize(11);
+    doc.setTextColor(...C.inkSoft);
+    doc.text('Отчёт по клиенту · ' + new Date().toLocaleDateString('ru-RU'), marginX, 30);
+    doc.setDrawColor(...C.line);
+    doc.setLineWidth(0.6);
+    doc.line(marginX, 36, pageW - marginX, 36);
+
+    let y = 48;
+
+    /* ---- Client info: simple stacked lines, big and readable ---- */
+    doc.setFont('DejaVuSans', 'bold');
+    doc.setFontSize(15);
+    doc.setTextColor(...C.ink);
+    doc.text(pdfFitText(doc, contact.fio, contentW), marginX, y);
+    y += 9;
+
+    doc.setFont('DejaVuSans', 'normal');
+    doc.setFontSize(11.5);
+    doc.setTextColor(...C.inkSoft);
+    if(contact.phone){
+      doc.text(contact.phone, marginX, y);
+      y += 7;
+    }
+    if(contact.address){
+      doc.text(pdfFitText(doc, contact.address, contentW), marginX, y);
+      y += 7;
+    }
+    const boxNames = getContactBoxNames(contact);
+    doc.text('Бокс: ' + (boxNames.length ? pdfFitText(doc, boxNames.join(', '), contentW - 16) : 'не привязан'), marginX, y);
+    y += 14;
+
+    /* ---- Balance: big stacked lines, no tiny table cells ---- */
+    const total = contactTotalDebt(contact);
+    const balanceRows = [
+      ['Оплачено всего', formatMoney(getContactPaidTotal(contact)), false],
+      ['Долг за аренду', formatMoney(Math.abs(contact.debtRent || 0)) + (contact.debtRent < 0 ? ' (переплата)' : ''), (contact.debtRent || 0) > 0],
+      ['Долг за свет', formatMoney(Math.abs(contact.debtLight || 0)) + (contact.debtLight < 0 ? ' (переплата)' : ''), (contact.debtLight || 0) > 0]
+    ];
+
+    balanceRows.forEach(([label, value, isDue]) => {
+      doc.setFont('DejaVuSans', 'normal');
+      doc.setFontSize(12);
+      doc.setTextColor(...C.inkSoft);
+      doc.text(label, marginX, y);
+      doc.setFont('DejaVuSans', 'bold');
+      doc.setFontSize(13.5);
+      doc.setTextColor(...(isDue ? C.goldDeep : C.ink));
+      doc.text(value, pageW - marginX, y, { align: 'right' });
+      y += 9;
+    });
+
+    y += 3;
+    doc.setDrawColor(...C.line);
+    doc.line(marginX, y, pageW - marginX, y);
+    y += 11;
+
+    doc.setFont('DejaVuSans', 'bold');
+    doc.setFontSize(15);
+    doc.setTextColor(...C.ink);
+    doc.text('Итого долг', marginX, y);
+    doc.setFontSize(18);
+    doc.setTextColor(...(total > 0 ? C.goldDeep : C.sageDeep));
+    doc.text(formatMoney(Math.abs(total)) + (total < 0 ? ' (переплата)' : ''), pageW - marginX, y, { align: 'right' });
+    y += 16;
+
+    /* ---- Payment history: simple two-line entries, no table grid ---- */
+    doc.setFont('DejaVuSans', 'bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...C.ink);
+    doc.text('История платежей', marginX, y);
+    y += 11;
 
     const rows = [];
     boxesData.forEach(box => {
       if((box.clients || []).includes(contact.fio)){
         (box.payments || []).forEach(p => {
-          rows.push([p.date, p.type, box.name, formatMoney(p.amount)]);
+          rows.push({ date: p.date, type: p.type, box: box.name, amount: formatMoney(p.amount) });
         });
       }
     });
 
-    const bodyRowH = 7.4;
-
     if(!rows.length){
-      doc.setFillColor(...C.white);
-      doc.setDrawColor(...C.line);
-      doc.rect(marginX, y, contentW, bodyRowH + 2, 'FD');
       doc.setFont('DejaVuSans', 'normal');
-      doc.setFontSize(9.5);
+      doc.setFontSize(12);
       doc.setTextColor(...C.inkSoft);
-      doc.text('Платежей пока не было', marginX + contentW / 2, y + (bodyRowH + 2) / 2 + 1.2, { align: 'center' });
-      y += bodyRowH + 2;
+      doc.text('Платежей пока не было', marginX, y);
+      y += 10;
     } else {
       rows.forEach((row, i) => {
-        if(y + bodyRowH > footerLineY - 6){
-          doc.addPage();
-          y = 20;
-          y = drawTableHeader(y);
+        if(y > footerLineY - 22){
+          y = newPage();
         }
-        doc.setFillColor(...(i % 2 === 0 ? C.white : C.rowAlt));
-        doc.setDrawColor(...C.line);
-        doc.rect(marginX, y, contentW, bodyRowH, 'FD');
-        doc.setFont('DejaVuSans', 'normal');
-        doc.setFontSize(9.5);
+        doc.setFont('DejaVuSans', 'bold');
+        doc.setFontSize(13);
         doc.setTextColor(...C.ink);
-        let colX = marginX;
-        row.forEach((val, ci) => {
-          const col = columns[ci];
-          const textX = col.align === 'right' ? colX + col.width - 3 : colX + 3;
-          doc.text(pdfFitText(doc, val, col.width - 6), textX, y + bodyRowH / 2 + 1.2, { align: col.align });
-          colX += col.width;
-        });
-        y += bodyRowH;
+        doc.text(pdfFitText(doc, row.type, contentW - 40), marginX, y);
+        doc.text(row.amount, pageW - marginX, y, { align: 'right' });
+        y += 6.5;
+
+        doc.setFont('DejaVuSans', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(...C.inkSoft);
+        doc.text(pdfFitText(doc, `${row.date} · ${row.box}`, contentW), marginX, y);
+        y += 8;
+
+        if(i < rows.length - 1){
+          doc.setDrawColor(...C.line);
+          doc.setLineWidth(0.3);
+          doc.line(marginX, y - 3, pageW - marginX, y - 3);
+        }
       });
     }
 
@@ -4445,10 +5240,10 @@
       doc.setLineWidth(0.3);
       doc.line(marginX, footerLineY - 4, pageW - marginX, footerLineY - 4);
       doc.setFont('DejaVuSans', 'normal');
-      doc.setFontSize(8);
+      doc.setFontSize(9);
       doc.setTextColor(...C.inkSoft);
-      doc.text(`${companyName || 'МурБокс'} · сформировано ${new Date().toLocaleDateString('ru-RU')}`, marginX, footerLineY);
-      doc.text(`Стр. ${i} из ${pageCount}`, pageW - marginX, footerLineY, { align: 'right' });
+      doc.text(`${companyName || 'Аренда'} · ${new Date().toLocaleDateString('ru-RU')}`, marginX, footerLineY);
+      doc.text(`${i} / ${pageCount}`, pageW - marginX, footerLineY, { align: 'right' });
     }
 
     return doc.output('blob');
@@ -4461,8 +5256,28 @@
     const yyyy = now.getFullYear();
     const hh = String(now.getHours()).padStart(2, '0');
     const min = String(now.getMinutes()).padStart(2, '0');
-    const safeCompany = (companyName || 'МурБокс').replace(/[\\/:*?"<>|]/g, '').trim() || 'МурБокс';
+    const safeCompany = (companyName || 'Аренда').replace(/[\\/:*?"<>|]/g, '').trim() || 'Аренда';
     return `${safeCompany} ${dd}.${mm}.${yyyy} ${hh}-${min}.pdf`;
+  }
+
+  function buildContactTextReport(contact, paymentInfo){
+    const boxNames = getContactBoxNames(contact);
+    const filled = (textReportTemplate || '')
+      .replace(/\{имя\}/g, contact.fio)
+      .replace(/\{компания\}/g, companyName || 'Аренда')
+      .replace(/\{бокс\}/g, boxNames.length ? boxNames.join(', ') : 'не привязан')
+      .replace(/\{оплачено\}/g, formatMoney(getContactPaidTotal(contact)))
+      .replace(/\{аренда\}/g, formatMoney(Math.abs(contact.debtRent || 0)))
+      .replace(/\{свет\}/g, formatMoney(Math.abs(contact.debtLight || 0)))
+      .replace(/\{долг\}/g, formatMoney(Math.abs(contactTotalDebt(contact))));
+
+    if(paymentInfo){
+      const prefix = paymentInfo.kind === 'debt'
+        ? `⚠️ *Начислен долг:* «${paymentInfo.type}» — ${formatMoney(paymentInfo.amount)}`
+        : `✅ *Платёж принят:* «${paymentInfo.type}» — ${formatMoney(paymentInfo.amount)}`;
+      return `${prefix}\n\n${filled}`;
+    }
+    return filled;
   }
 
   async function sendReportToContact(contact, paymentInfo){
@@ -4473,13 +5288,29 @@
       return { ok:false, reason:'no-phone' };
     }
 
-    try{
-      const blob = generateContactPdfBlob(contact);
-      const phoneDigits = contact.phone.replace(/\D/g, '');
-      const chatId = phoneDigits + '@c.us';
+    const phoneDigits = contact.phone.replace(/\D/g, '');
+    const chatId = phoneDigits + '@c.us';
 
+    try{
+      if(reportSendMethod === 'text'){
+        const message = buildContactTextReport(contact, paymentInfo);
+        const url = `https://api.green-api.com/waInstance${greenApiIdInstance}/sendMessage/${greenApiToken}`;
+        const resp = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chatId, message })
+        });
+        if(resp.ok) return { ok:true };
+        const errText = await resp.text();
+        console.error('Green API error:', errText);
+        return { ok:false, reason:'server', status: resp.status };
+      }
+
+      const blob = generateContactPdfBlob(contact);
       const caption = paymentInfo
-        ? `Платёж принят: «${paymentInfo.type}» — ${formatMoney(paymentInfo.amount)}. Актуальный статус — во вложении.`
+        ? (paymentInfo.kind === 'debt'
+            ? `Начислен долг: «${paymentInfo.type}» — ${formatMoney(paymentInfo.amount)}. Актуальный статус — во вложении.`
+            : `Платёж принят: «${paymentInfo.type}» — ${formatMoney(paymentInfo.amount)}. Актуальный статус — во вложении.`)
         : `Отчёт по оплатам — ${contact.fio}`;
 
       const formData = new FormData();
@@ -4505,11 +5336,16 @@
   /* ---------- PAYMENT DAY REMINDERS (text via Green API) ---------- */
   function buildReminderText(contact, box){
     const debtText = formatMoney(Math.abs(boxTotalDebt(box)));
+    const rentText = formatMoney(Math.abs(box.debtRent || 0));
+    const lightText = formatMoney(Math.abs(getLightDebt(box)));
     return (reminderTemplate || '')
       .replace(/\{имя\}/g, contact.fio)
+      .replace(/\{компания\}/g, companyName || 'Аренда')
       .replace(/\{бокс\}/g, box.name)
       .replace(/\{день\}/g, box.payDay || '')
-      .replace(/\{долг\}/g, debtText);
+      .replace(/\{долг\}/g, debtText)
+      .replace(/\{аренда\}/g, rentText)
+      .replace(/\{свет\}/g, lightText);
   }
 
   async function sendReminderMessage(contact, box){
@@ -4594,8 +5430,136 @@
   // Проверяем при возврате во вкладку — это ловит случаи, когда браузер
   // приостанавливал таймеры в фоне и точная минута была пропущена.
   document.addEventListener('visibilitychange', () => {
-    if(document.visibilityState === 'visible') checkReminders(false);
+    if(document.visibilityState === 'visible'){
+      checkReminders(false);
+      checkOverdueNotifications(false);
+      checkDebtTransfers(false);
+      checkTemporaryOverdue(false);
+    }
   });
+
+  /* ---------- OVERDUE DEBT NOTIFICATIONS (7 / 14 / 30 days) ---------- */
+  const OVERDUE_MILESTONES = [7, 14, 30];
+  const OVERDUE_ICONS = { 7: '⏰', 14: '⚠️', 30: '🚨' };
+  const OVERDUE_TITLES = {
+    7: 'Напоминание о просрочке',
+    14: 'Важно: просрочка платежа',
+    30: 'Срочно: длительная просрочка'
+  };
+
+  // Tracks how long a box's debt has been continuously unpaid, independent of
+  // calendar month length (a naive "days since payday" calculation breaks at
+  // month boundaries — most months don't have exactly 30 days before the
+  // cycle resets, so a 30-day milestone would silently never fire in them).
+  function updateDebtStreaks(){
+    boxesData.forEach(box => {
+      const debt = boxTotalDebt(box);
+      if(debt > 0){
+        if(!box.debtSince) box.debtSince = new Date().toISOString();
+      } else {
+        box.debtSince = null;
+      }
+    });
+  }
+
+  function daysOverdueForBox(box){
+    if(!box.debtSince) return null;
+    const since = new Date(box.debtSince);
+    if(isNaN(since.getTime())) return null;
+    return Math.floor((Date.now() - since.getTime()) / 86400000);
+  }
+
+  function buildOverdueText(contact, box, daysOverdue){
+    const icon = OVERDUE_ICONS[daysOverdue] || '⏰';
+    const title = OVERDUE_TITLES[daysOverdue] || 'Напоминание о просрочке';
+    const debtText = formatMoney(Math.abs(boxTotalDebt(box)));
+    return (overdueTemplate || '')
+      .replace(/\{иконка\}/g, icon)
+      .replace(/\{заголовок\}/g, title)
+      .replace(/\{имя\}/g, contact.fio)
+      .replace(/\{компания\}/g, companyName || 'Аренда')
+      .replace(/\{бокс\}/g, box.name)
+      .replace(/\{долг\}/g, debtText)
+      .replace(/\{дней\}/g, daysOverdue);
+  }
+
+  async function sendOverdueMessage(contact, box, daysOverdue){
+    if(!greenApiIdInstance || !greenApiToken || !contact.phone) return { ok:false };
+    try{
+      const phoneDigits = contact.phone.replace(/\D/g, '');
+      const chatId = phoneDigits + '@c.us';
+      const message = buildOverdueText(contact, box, daysOverdue);
+      const url = `https://api.green-api.com/waInstance${greenApiIdInstance}/sendMessage/${greenApiToken}`;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chatId, message })
+      });
+      return { ok: resp.ok };
+    } catch(err){
+      console.error(err);
+      return { ok:false };
+    }
+  }
+
+  function checkOverdueNotifications(force){
+    if(!overdueNotificationsEnabled && !force) return;
+    if(!greenApiIdInstance || !greenApiToken){
+      if(force) showToast('Сначала подключите WhatsApp в настройках');
+      return;
+    }
+
+    const now = new Date();
+    const currentHHMM = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+    const todayStr = localDateStr(now);
+
+    if(!force){
+      if(lastOverdueCheckDate === todayStr) return;
+      if(currentHHMM < (reminderTime || '00:00')) return;
+    }
+
+    const targets = [];
+    boxesData.forEach(box => {
+      const debt = boxTotalDebt(box);
+      if(debt <= 0) return;
+      const daysOverdue = daysOverdueForBox(box);
+      if(daysOverdue === null || !OVERDUE_MILESTONES.includes(daysOverdue)) return;
+
+      box._overdueSent = box._overdueSent || {};
+      const key = String(daysOverdue);
+      if(box._overdueSent[key] === todayStr) return;
+      box._overdueSent[key] = todayStr;
+
+      (box.clients || []).forEach(fio => {
+        const contact = contactsData.find(c => c.fio === fio);
+        if(contact && contact.phone){
+          targets.push({ contact, box, daysOverdue });
+        }
+      });
+    });
+
+    if(!force){
+      lastOverdueCheckDate = todayStr;
+      try{ localStorage.setItem('murbox_last_overdue_check', todayStr); } catch(e){}
+    }
+
+    if(!targets.length){
+      if(force) showToast('Сегодня нет просрочек для оповещения');
+      return;
+    }
+
+    showToast(`Отправка оповещений о просрочке: ${targets.length}`);
+    Promise.all(targets.map(t => sendOverdueMessage(t.contact, t.box, t.daysOverdue))).then(results => {
+      const success = results.filter(r => r.ok).length;
+      showToast(`Оповещения отправлены: ${success} из ${targets.length}`);
+      logActivity(`Отправлены оповещения о просрочке: ${success} из ${targets.length}`);
+      renderReport();
+    });
+  }
+
+  setInterval(() => checkOverdueNotifications(false), 60000);
+  setInterval(() => checkDebtTransfers(false), 60000);
+  setInterval(() => checkTemporaryOverdue(false), 60000);
 
   async function sendWhatsappReport(){
     const contact = contactsData[currentContactDetailIndex];
@@ -4623,29 +5587,27 @@
 
   /* ---------- AUTO-SEND PDF AFTER PAYMENT ---------- */
   async function notifyClientsAfterPayment(box, paymentInfo){
-    if(!autoSendOnPayment || !greenApiIdInstance || !greenApiToken) return;
+    if(!autoSendOnPayment || !greenApiIdInstance || !greenApiToken) return { ok:false, skipped:true };
 
     const clients = (box.clients || [])
       .map(fio => contactsData.find(c => c.fio === fio))
       .filter(c => c && c.phone);
 
-    if(!clients.length) return;
-
-    showToast(clients.length > 1 ? 'Отправка PDF-отчётов клиентам...' : `Отправка PDF-отчёта: ${clients[0].fio}`);
+    if(!clients.length) return { ok:false, skipped:true };
 
     const results = await Promise.all(clients.map(c => sendReportToContact(c, paymentInfo)));
     const successCount = results.filter(r => r.ok).length;
 
-    if(successCount === clients.length){
-      showToast(clients.length > 1
-        ? `PDF-отчёты отправлены: ${successCount} из ${clients.length}`
-        : `PDF-отчёт отправлен: ${clients[0].fio}`);
-    } else {
-      showToast(`Отправлено ${successCount} из ${clients.length}. Проверьте подключение WhatsApp`);
-    }
+    return {
+      ok: successCount === clients.length,
+      text: clients.length > 1
+        ? `Отправлено ${successCount} из ${clients.length}`
+        : (successCount ? 'Отправлено клиенту' : 'Не удалось отправить')
+    };
   }
 
   loadPersistedData();
+  updateCompanyNameDisplay(companyName);
   renderBoxes();
   renderContacts();
   renderReport();
@@ -4654,6 +5616,9 @@
   setupManifest();
   setupServiceWorker();
   checkReminders(false);
+  checkOverdueNotifications(false);
+  checkDebtTransfers(false);
+  checkTemporaryOverdue(false);
 </script>
 
 </body>

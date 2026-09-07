@@ -389,16 +389,6 @@
     transition: transform .12s ease, box-shadow .12s ease;
   }
   .box-card:active{ transform: scale(0.985); }
-  .box-card .thumb{
-    width:64px; height:64px;
-    border-radius:14px;
-    background: var(--cream);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
-  }
-  .box-card .thumb svg{ width:32px; height:32px; stroke: var(--gold-deep); }
   .box-card .body{ flex:1; min-width:0; }
   .box-card-top{
     display:flex;
@@ -423,40 +413,6 @@
     flex-shrink:0;
   }
   .box-card .dims{ font-size:11.5px; color:var(--ink-soft); margin-bottom:8px; }
-  .box-card-debts{
-    display:flex;
-    align-items:stretch;
-    background: var(--cream);
-    border-radius:12px;
-    padding:9px 12px;
-    margin:9px 0 8px;
-    gap:12px;
-  }
-  .box-card-debt-item{
-    flex:1;
-    min-width:0;
-    display:flex;
-    flex-direction:column;
-    gap:1px;
-  }
-  .box-card-debt-label{
-    font-size:9.5px;
-    font-weight:700;
-    color: var(--ink-soft);
-    text-transform:uppercase;
-    letter-spacing:.04em;
-  }
-  .box-card-debt-value{
-    font-family:'Unbounded', sans-serif;
-    font-size:13px;
-    font-weight:700;
-    color: var(--sage-deep);
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .box-card-debt-value.due{ color: var(--gold-deep); }
-  .box-card-debt-divider{ width:1px; background: var(--line); flex-shrink:0; }
 
   /* Упрощённая карточка бокса: без иконки и тяжёлых блоков — только
      название, цена и две компактные строки-показателя. */
@@ -481,6 +437,7 @@
   }
   .box-stat b.due{ color: var(--gold-deep); }
   .box-stat-sep{ color: var(--line); font-size:12px; }
+  .box-stats .wa-status{ margin-left:0; }
   .box-card .note-line{
     font-size:11.5px;
     color: var(--ink-soft);
@@ -489,8 +446,6 @@
     overflow:hidden;
     text-overflow:ellipsis;
   }
-  .box-card .foot{ display:flex; align-items:center; justify-content:space-between; }
-  .box-card .price{ font-family:'Unbounded',sans-serif; font-size:14px; color:var(--gold-deep); font-weight:700; }
 
   .temp-timer-row{
     display:flex;
@@ -501,7 +456,7 @@
     background: var(--cream);
     border-radius:12px;
     padding:10px 14px;
-    margin-bottom:10px;
+    margin:11px 0 10px;
     box-sizing:border-box;
   }
   .temp-timer{
@@ -2442,6 +2397,35 @@
         </div>
       </div>
 
+      <div class="settings-section" id="settings-section-rent-duration">
+        <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
+          <span class="settings-section-icon settings-section-icon--sage">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </span>
+          <span class="settings-section-title">
+            <h4>Срок аренды <span id="rent-duration-status-badge" class="wa-status connected">виден</span></h4>
+            <p>Показывать в карточке бокса строку «Срок аренды» с подсчётом дней и кнопкой паузы</p>
+          </span>
+          <span class="settings-section-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="settings-section-collapse">
+          <div class="settings-section-body">
+            <div class="field">
+              <label>Показывать срок аренды</label>
+              <div class="toggle-row">
+                <span class="toggle-desc">Отсчёт дней аренды с возможностью приостановить и возобновить — например, если бокс временно не используется</span>
+                <label class="switch">
+                  <input type="checkbox" id="input-show-rent-duration" checked>
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="settings-section" id="settings-section-backup">
         <button type="button" class="settings-section-toggle" onclick="toggleSettingsSection(this)">
           <span class="settings-section-icon">
@@ -3043,6 +3027,24 @@
           </div>
         </div>
       </div>
+
+      <div class="detail-collapse-section" id="detail-rent-section">
+        <button type="button" class="detail-collapse-toggle" onclick="toggleDetailSection(this)">
+          <span class="detail-collapse-title">Срок аренды <span class="detail-collapse-count" id="detail-rent-count">0</span></span>
+          <span class="detail-collapse-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div class="detail-collapse-body">
+          <div class="detail-collapse-body-inner">
+            <div id="detail-rent-list"></div>
+            <button type="button" class="btn-temp-action tone-sage" id="btn-rent-pause" style="width:100%; margin-top:10px;" onclick="toggleRentPause()">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+              <span id="btn-rent-pause-label">Приостановить аренду</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -3144,6 +3146,7 @@
   let showKopecks = false;
   let defaultBoxSplit = 'поровну';
   let showDebtTransfersHistory = true;
+  let showRentDuration = true;
   let reportSendMethod = 'pdf';
   let textReportTemplate = '📋 *Отчёт по оплате* — {компания}\n\nЗдравствуйте, *{имя}*!\n\n📦 Бокс: *{бокс}*\n\n✅ Оплачено всего: *{оплачено}*\n🏠 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n📊 Итого долг: *{долг}*\n\nСпасибо, что вы с нами! 🙏';
   let greenApiIdInstance = '';
@@ -3211,7 +3214,9 @@
     document.getElementById('input-overdue-text').value = overdueTemplate;
     updateOverdueStatusBadge();
     document.getElementById('input-show-debt-transfers').checked = showDebtTransfersHistory;
+    document.getElementById('input-show-rent-duration').checked = showRentDuration;
     updateDebtTransfersStatusBadge();
+    updateRentDurationStatusBadge();
     document.getElementById('input-temporary-enabled').checked = temporaryBoxesEnabled;
     updateTemporaryStatusBadge();
     document.querySelectorAll('#settings-split-select .chip-option').forEach(el =>
@@ -3246,6 +3251,13 @@
     const badge = document.getElementById('overdue-status-badge');
     badge.textContent = overdueNotificationsEnabled ? 'вкл' : 'выкл';
     badge.classList.toggle('connected', overdueNotificationsEnabled);
+  }
+
+  function updateRentDurationStatusBadge(){
+    const badge = document.getElementById('rent-duration-status-badge');
+    if(!badge) return;
+    badge.textContent = showRentDuration ? 'виден' : 'скрыт';
+    badge.classList.toggle('connected', showRentDuration);
   }
 
   function updateDebtTransfersStatusBadge(){
@@ -3323,6 +3335,7 @@
         temporaryBoxesEnabled,
         overdueNotificationsEnabled, overdueTemplate,
         showDebtTransfersHistory,
+        showRentDuration,
         reportSendMethod, textReportTemplate
       },
       boxesData,
@@ -3430,6 +3443,7 @@
     overdueNotificationsEnabled = !!s.overdueNotificationsEnabled;
     overdueTemplate = s.overdueTemplate || overdueTemplate;
     showDebtTransfersHistory = s.showDebtTransfersHistory !== undefined ? s.showDebtTransfersHistory : true;
+    showRentDuration = s.showRentDuration !== undefined ? s.showRentDuration : true;
     reportSendMethod = s.reportSendMethod || 'pdf';
     textReportTemplate = s.textReportTemplate || textReportTemplate;
 
@@ -3453,6 +3467,7 @@
     updateReminderStatusBadge();
     updateOverdueStatusBadge();
     updateDebtTransfersStatusBadge();
+    updateRentDurationStatusBadge();
     updateReportFormatStatusBadge();
     updateTemporaryStatusBadge();
     updateTemporaryNavVisibility();
@@ -3526,6 +3541,7 @@
     overdueNotificationsEnabled = false;
     overdueTemplate = '{иконка} *{заголовок}*\n\nЗдравствуйте, *{имя}*!\n\nПо боксу «*{бокс}*» в *{компания}* уже *{дней} дней* числится задолженность.\n\n💰 Текущий долг: *{долг}*\n\nПожалуйста, погасите его при первой возможности — если уже оплатили, извините за беспокойство! 🙏';
     showDebtTransfersHistory = true;
+    showRentDuration = true;
     reportSendMethod = 'pdf';
     textReportTemplate = '📋 *Отчёт по оплате* — {компания}\n\nЗдравствуйте, *{имя}*!\n\n📦 Бокс: *{бокс}*\n\n✅ Оплачено всего: *{оплачено}*\n🏠 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n📊 Итого долг: *{долг}*\n\nСпасибо, что вы с нами! 🙏';
 
@@ -3541,6 +3557,7 @@
     updateReminderStatusBadge();
     updateOverdueStatusBadge();
     updateDebtTransfersStatusBadge();
+    updateRentDurationStatusBadge();
     updateReportFormatStatusBadge();
     updateTemporaryStatusBadge();
     updateTemporaryNavVisibility();
@@ -3686,6 +3703,7 @@
     const price = document.getElementById('input-kwh-price').value.trim();
     const kopecks = document.getElementById('input-show-kopecks').checked;
     const showTransfersOn = document.getElementById('input-show-debt-transfers').checked;
+    const showRentOn = document.getElementById('input-show-rent-duration').checked;
     const splitEl = document.querySelector('#settings-split-select .chip-option.active');
     const greenId = document.getElementById('input-green-id').value.trim();
     const greenToken = document.getElementById('input-green-token').value.trim();
@@ -3708,6 +3726,7 @@
     kwhPrice = price;
     showKopecks = kopecks;
     showDebtTransfersHistory = showTransfersOn;
+    showRentDuration = showRentOn;
     defaultBoxSplit = splitEl ? splitEl.dataset.value : 'поровну';
     greenApiIdInstance = greenId;
     greenApiToken = greenToken;
@@ -3724,6 +3743,7 @@
     updateReminderStatusBadge();
     updateOverdueStatusBadge();
     updateDebtTransfersStatusBadge();
+    updateRentDurationStatusBadge();
     updateReportFormatStatusBadge();
     updateTemporaryStatusBadge();
     updateTemporaryNavVisibility();
@@ -4087,7 +4107,9 @@
         name, price, period, payDay, desc, firstPaymentDate, firstPaymentPrice,
         debtRent:0, payments:[], clients:[],
         meterStart: meterStart, meterCurrent: meterStart,
-        paymentSplit: selectedBoxSplit
+        paymentSplit: selectedBoxSplit,
+        rentStartedAt: new Date().toISOString(),
+        rentPaused: false, rentPausedAt: null, rentPausedTotalMs: 0
       });
     }
 
@@ -4402,23 +4424,38 @@
 
     temporaryBookings.forEach((b, i) => {
       const card = document.createElement('div');
-      card.className = 'box-card just-added';
+      card.className = 'box-card simple just-added';
       card.id = 'temp-card-' + i;
       card.onclick = () => toggleTempCardExpand(i);
       const statusClass = b.status === 'активен' ? 'connected' : (b.status === 'завершена' ? 'done' : '');
+
+      const durationText = b.durationValue
+        ? b.durationValue + ' ' + (b.durationType === 'сутки' ? 'сут.' : 'ч.')
+        : (b.durationType === 'сутки' ? 'Сутки' : 'Часы');
+
+      const rateText = [
+        b.priceDay ? b.priceDay + '/сутки' : '',
+        b.priceHour ? b.priceHour + '/час' : ''
+      ].filter(Boolean).join(' · ');
+
+      const noteText = [
+        (b.startDate || b.startTime)
+          ? 'Начало — ' + (b.startDate ? new Date(b.startDate + 'T00:00:00').toLocaleDateString('ru-RU') : '') + (b.startTime ? ', ' + b.startTime : '')
+          : '',
+        b.phone || ''
+      ].filter(Boolean).join(' · ');
+
       card.innerHTML = `
-        <div class="thumb">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-        </div>
         <div class="body">
-          <h4>${b.name}</h4>
-          <div class="foot">
-            <div class="price">${b.durationValue ? b.durationValue + ' ' + (b.durationType === 'сутки' ? 'сут.' : 'ч.') : (b.durationType === 'сутки' ? 'Сутки' : 'Часы')}</div>
-            <span class="wa-status ${statusClass}">${tempStatusLabel(b.status)}</span>
+          <div class="box-card-top">
+            <h4>${b.name}</h4>
+            <div class="box-card-price">${durationText}</div>
           </div>
-          ${b.phone ? `<div class="dims">${b.phone}</div>` : ''}
-          ${(b.priceDay || b.priceHour) ? `<div class="dims">${b.priceDay ? b.priceDay + '/сутки' : ''}${b.priceDay && b.priceHour ? ' · ' : ''}${b.priceHour ? b.priceHour + '/час' : ''}</div>` : ''}
-          ${(b.startDate || b.startTime) ? `<div class="dims">Начало — ${b.startDate ? new Date(b.startDate + 'T00:00:00').toLocaleDateString('ru-RU') : ''}${b.startTime ? ', ' + b.startTime : ''}</div>` : ''}
+          <div class="box-stats">
+            <span class="wa-status ${statusClass}">${tempStatusLabel(b.status)}</span>
+            ${rateText ? `<span class="box-stat-sep">·</span><span class="box-stat">${rateText}</span>` : ''}
+          </div>
+          ${noteText ? `<div class="note-line">${noteText}</div>` : ''}
           <div class="temp-timer-row" onclick="event.stopPropagation();">
             <div class="temp-timer" id="temp-timer-${i}"></div>
             <label class="switch" title="Обратный отсчёт">
@@ -4603,6 +4640,88 @@
     meterEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>Счётчик: ${box.meterCurrent} кВт (начало отсчёта — ${box.meterStart} кВт)`;
   }
 
+  /* ---------- RENT DURATION (дни аренды + пауза) ---------- */
+  // Дата старта берётся из явного поля, иначе из даты первого платежа.
+  // Пауза копится отдельно, чтобы простой не засчитывался в срок аренды.
+  function getRentStart(box){
+    const raw = box.rentStartedAt || (box.firstPaymentDate ? box.firstPaymentDate + 'T00:00:00' : null);
+    if(!raw) return null;
+    const d = new Date(raw);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function getRentDays(box){
+    const start = getRentStart(box);
+    if(!start) return 0;
+    const now = Date.now();
+    let elapsed = now - start.getTime();
+    elapsed -= (box.rentPausedTotalMs || 0);
+    if(box.rentPaused && box.rentPausedAt){
+      const pausedAt = new Date(box.rentPausedAt).getTime();
+      if(!isNaN(pausedAt)) elapsed -= (now - pausedAt);
+    }
+    return Math.max(0, Math.floor(elapsed / 86400000));
+  }
+
+  function renderRentDuration(box){
+    const section = document.getElementById('detail-rent-section');
+    const listEl = document.getElementById('detail-rent-list');
+    const countEl = document.getElementById('detail-rent-count');
+    const btn = document.getElementById('btn-rent-pause');
+    const btnLabel = document.getElementById('btn-rent-pause-label');
+    if(!section || !listEl) return;
+
+    section.style.display = showRentDuration ? 'block' : 'none';
+    if(!showRentDuration) return;
+
+    const start = getRentStart(box);
+    const days = getRentDays(box);
+    const pausedDays = Math.floor((box.rentPausedTotalMs || 0) / 86400000);
+
+    countEl.textContent = days;
+
+    const rows = [
+      ['Начало аренды', start ? start.toLocaleDateString('ru-RU') : 'не указано'],
+      ['Дней в аренде', String(days)],
+      ['Статус', box.rentPaused ? 'На паузе' : 'Идёт']
+    ];
+    if(pausedDays > 0) rows.push(['Пропущено дней', String(pausedDays)]);
+
+    listEl.innerHTML = rows.map(([label, value]) => `
+      <div class="history-item">
+        <div><div class="history-type">${label}</div></div>
+        <div class="history-amount">${value}</div>
+      </div>`).join('');
+
+    btn.classList.toggle('tone-sage', !box.rentPaused);
+    btn.classList.toggle('tone-gold', !!box.rentPaused);
+    btnLabel.textContent = box.rentPaused ? 'Возобновить аренду' : 'Приостановить аренду';
+  }
+
+  function toggleRentPause(){
+    const box = boxesData[currentDetailIndex];
+    if(!box) return;
+
+    if(box.rentPaused){
+      const pausedAt = new Date(box.rentPausedAt).getTime();
+      if(!isNaN(pausedAt)){
+        box.rentPausedTotalMs = (box.rentPausedTotalMs || 0) + (Date.now() - pausedAt);
+      }
+      box.rentPaused = false;
+      box.rentPausedAt = null;
+      logActivity(`Аренда возобновлена — бокс «${box.name}»`);
+      showToast('Аренда возобновлена');
+    } else {
+      box.rentPaused = true;
+      box.rentPausedAt = new Date().toISOString();
+      logActivity(`Аренда приостановлена — бокс «${box.name}»`);
+      showToast('Аренда приостановлена');
+    }
+
+    renderRentDuration(box);
+    renderReport();
+  }
+
   /* ---------- BOX DETAIL ---------- */
   function openBoxDetail(index){
     currentDetailIndex = index;
@@ -4612,6 +4731,7 @@
     renderPaid(box);
     renderHistory(box);
     renderClients(box);
+    renderRentDuration(box);
 
     const paydayEl = document.getElementById('detail-payday');
     const upcomingFirst = getUpcomingFirstPayment(box);
@@ -5898,8 +6018,7 @@
     const yyyy = now.getFullYear();
     const hh = String(now.getHours()).padStart(2, '0');
     const min = String(now.getMinutes()).padStart(2, '0');
-    const safeCompany = (companyName || 'Аренда').replace(/[\\/:*?"<>|]/g, '').trim() || 'Аренда';
-    return `${safeCompany} ${dd}.${mm}.${yyyy} ${hh}-${min}.pdf`;
+    return `Payment_${dd}.${mm}.${yyyy}_${hh}-${min}.pdf`;
   }
 
   function buildContactTextReport(contact, paymentInfo){

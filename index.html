@@ -42,13 +42,32 @@
     position:fixed;
     inset:0;
     touch-action:pan-x pan-y;
+    /* Ведём себя как нативное приложение: долгое нажатие не выделяет
+       текст и не открывает меню «Копировать». */
+    -webkit-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    -webkit-touch-callout:none;
+  }
+  /* Но в полях ввода выделение обязано работать — иначе не отредактировать
+     и не вставить текст. */
+  input, textarea, select, [contenteditable="true"]{
+    -webkit-user-select:text;
+    -ms-user-select:text;
+    user-select:text;
+    -webkit-touch-callout:default;
   }
 
   .phone{
     width:100%;
     max-width:480px;
+    /* --app-height выставляется из JS по фактической видимой области.
+       На мобильных при перезагрузке 100dvh какое-то время резолвится в
+       «высокий» вариант (как будто адресная строка скрыта), из-за чего
+       нижняя панель уезжала за край экрана. */
     height:100vh;
     height:100dvh;
+    height:var(--app-height, 100dvh);
     margin:0 auto;
     background: var(--paper);
     position:relative;
@@ -132,12 +151,23 @@
   .icon-btn svg{ width:18px; height:18px; stroke: var(--ink); }
   .dot{
     position:absolute;
-    top:6px; right:6px;
-    width:7px; height:7px;
-    border-radius:50%;
-    background: var(--gold);
+    top:2px; right:2px;
+    min-width:16px;
+    height:16px;
+    padding:0 4px;
+    box-sizing:border-box;
+    border-radius:100px;
+    background:#C44444;
     border:1.5px solid var(--paper);
+    color:#fff;
+    font-family:'Manrope', sans-serif;
+    font-size:9.5px;
+    font-weight:800;
+    line-height:13px;
+    text-align:center;
+    display:none;
   }
+  .dot.show{ display:block; }
   .icon-btn.add-btn{
     background: var(--ink);
     border-color: var(--ink);
@@ -427,6 +457,38 @@
   }
   .box-card-debt-value.due{ color: var(--gold-deep); }
   .box-card-debt-divider{ width:1px; background: var(--line); flex-shrink:0; }
+
+  /* Упрощённая карточка бокса: без иконки и тяжёлых блоков — только
+     название, цена и две компактные строки-показателя. */
+  .box-card.simple{ padding:15px 16px; gap:0; }
+  .box-stats{
+    display:flex;
+    align-items:baseline;
+    gap:7px;
+    margin-top:7px;
+  }
+  .box-stat{
+    font-size:12px;
+    color: var(--ink-soft);
+    white-space:nowrap;
+  }
+  .box-stat b{
+    font-family:'Unbounded', sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    color: var(--sage-deep);
+    margin-left:3px;
+  }
+  .box-stat b.due{ color: var(--gold-deep); }
+  .box-stat-sep{ color: var(--line); font-size:12px; }
+  .box-card .note-line{
+    font-size:11.5px;
+    color: var(--ink-soft);
+    margin-top:7px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
   .box-card .foot{ display:flex; align-items:center; justify-content:space-between; }
   .box-card .price{ font-family:'Unbounded',sans-serif; font-size:14px; color:var(--gold-deep); font-weight:700; }
 
@@ -1772,6 +1834,75 @@
     animation: paymentFadeUp .3s .18s both;
   }
 
+  /* ---------- DELETE CONFIRM + DELETED SUCCESS ---------- */
+  .confirm-overlay, .deleted-overlay{
+    position:absolute;
+    inset:0;
+    background: rgba(55,43,30,0.6);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:120;
+  }
+  .confirm-overlay.open, .deleted-overlay.open{ display:flex; }
+  .confirm-card, .deleted-card{
+    background: var(--paper);
+    border-radius:28px;
+    padding:32px 24px 24px;
+    width:82%;
+    max-width:300px;
+    text-align:center;
+    box-shadow: 0 30px 60px -18px rgba(55,43,30,0.55);
+    animation: paymentPop .38s cubic-bezier(.34,1.56,.64,1);
+  }
+  .confirm-icon, .deleted-icon{
+    width:62px; height:62px;
+    margin:0 auto 16px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    animation: paymentIconPop .45s .08s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  .confirm-icon{ background:#FBEAEA; }
+  .confirm-icon svg{ width:28px; height:28px; stroke:#C44444; }
+  .deleted-icon{ background: linear-gradient(135deg, #EAEEE3, #E1E9D5); }
+  .deleted-icon svg{ width:30px; height:30px; stroke: var(--sage-deep); }
+  .confirm-title, .deleted-title{
+    font-family:'Unbounded', sans-serif;
+    font-size:17px;
+    font-weight:800;
+    color: var(--ink);
+    margin-bottom:6px;
+    animation: paymentFadeUp .3s .16s both;
+  }
+  .confirm-text, .deleted-subtitle{
+    font-size:12.5px;
+    color: var(--ink-soft);
+    line-height:1.55;
+    animation: paymentFadeUp .3s .22s both;
+  }
+  .confirm-text{ margin-bottom:20px; }
+  .confirm-actions{
+    display:flex;
+    gap:10px;
+    animation: paymentFadeUp .3s .26s both;
+  }
+  .confirm-btn{
+    flex:1;
+    padding:13px 10px;
+    border-radius:14px;
+    border:1px solid var(--line);
+    font-family:'Manrope', sans-serif;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition: transform .1s ease;
+  }
+  .confirm-btn:active{ transform: scale(0.96); }
+  .confirm-no{ background: var(--cream); color: var(--ink); }
+  .confirm-yes{ background:#C44444; border-color:#C44444; color:#fff; }
+
   /* ---------- BOTTOM NAV ---------- */
   .bottombar{
     flex-shrink:0;
@@ -1831,8 +1962,8 @@
           <path d="M12 5v14M5 12h14"/>
         </svg>
       </div>
-      <div class="icon-btn" title="Уведомления">
-        <div class="dot"></div>
+      <div class="icon-btn" title="Уведомления" onclick="openNotifications()">
+        <div class="dot" id="notif-badge"></div>
         <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/>
           <path d="M10 20a2 2 0 0 0 4 0"/>
@@ -2973,6 +3104,32 @@
     </div>
   </div>
 
+  <!-- DELETE CONFIRM -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-card">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+      </div>
+      <div class="confirm-title" id="confirm-title">Удалить?</div>
+      <div class="confirm-text" id="confirm-text"></div>
+      <div class="confirm-actions">
+        <button type="button" class="confirm-btn confirm-no" onclick="resolveConfirm(false)">Нет</button>
+        <button type="button" class="confirm-btn confirm-yes" onclick="resolveConfirm(true)">Да</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETED SUCCESS -->
+  <div class="deleted-overlay" id="deleted-overlay">
+    <div class="deleted-card">
+      <div class="deleted-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <div class="deleted-title">Удалено</div>
+      <div class="deleted-subtitle" id="deleted-subtitle"></div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -3010,12 +3167,13 @@
     return (showKopecks ? n.toFixed(2) : Math.round(n)) + ' ₽';
   }
 
-  // Everywhere a rent/light/total balance is shown as text: negative means
-  // the client has overpaid, not that they owe a negative amount — so it
-  // must read "(переплата)", never a bare negative sum.
+  // Внутри приложения долг хранится положительным числом, переплата —
+  // отрицательным. При ОТОБРАЖЕНИИ знак инвертируется, чтобы читалось как
+  // баланс клиента: долг → «−», полный расчёт → «0», переплата → «+».
   function formatDebtText(value){
     const n = value || 0;
-    return formatMoney(Math.abs(n)) + (n < 0 ? ' (переплата)' : '');
+    if(n === 0) return formatMoney(0);
+    return (n > 0 ? '−' : '+') + formatMoney(Math.abs(n));
   }
 
   function selectSettingsSplit(el){
@@ -3389,7 +3547,7 @@
     updateStorageInfo();
 
     closeSettingsModal();
-    showToast('Приложение полностью сброшено');
+    showDeletedAnimation('Все данные приложения');
   }
 
   /* ---------- PWA: manifest, service worker, install prompt ---------- */
@@ -3417,6 +3575,33 @@
       console.warn('Не удалось обновить manifest.json (используется значение по умолчанию):', err);
     }
   }
+
+  /* ---------- APP HEIGHT (fixes bottom nav after reload) ---------- */
+  // На мобильных высота видимой области меняется, когда браузер прячет или
+  // показывает адресную строку, а сразу после перезагрузки dvh ещё не
+  // «устаканился» — из-за этого нижняя панель уезжала под край экрана.
+  // Берём фактическую высоту и держим её в CSS-переменной.
+  function syncAppHeight(){
+    // Намеренно берём window.innerHeight, а не visualViewport.height:
+    // последний схлопывается при открытии экранной клавиатуры, и всё
+    // приложение сжималось бы во время ввода.
+    const h = Math.round(window.innerHeight);
+    if(h > 0){
+      document.documentElement.style.setProperty('--app-height', h + 'px');
+    }
+  }
+
+  syncAppHeight();
+  window.addEventListener('resize', syncAppHeight);
+  window.addEventListener('orientationchange', () => setTimeout(syncAppHeight, 150));
+  window.addEventListener('pageshow', syncAppHeight);
+  window.addEventListener('load', () => {
+    syncAppHeight();
+    // Ещё пара замеров: сразу после загрузки мобильный браузер часто
+    // доводит панели до конечного положения с небольшой задержкой.
+    setTimeout(syncAppHeight, 120);
+    setTimeout(syncAppHeight, 400);
+  });
 
   function setupServiceWorker(){
     if(!('serviceWorker' in navigator)) return;
@@ -3779,7 +3964,7 @@
 
   function setReportValue(id, value){
     const el = document.getElementById(id);
-    el.textContent = formatMoney(value);
+    el.textContent = formatDebtText(value);
     el.classList.toggle('credit', value <= 0);
   }
 
@@ -3789,36 +3974,29 @@
     list.innerHTML = '';
     boxesData.forEach((box, i) => {
       const card = document.createElement('div');
-      card.className = 'box-card just-added';
+      card.className = 'box-card simple just-added';
       card.onclick = () => openBoxDetail(i);
 
       const rentDebt = box.debtRent || 0;
       const lightDebt = getLightDebt(box);
-      const rentLabel = rentDebt < 0 ? 'Переплата' : 'Долг за аренду';
-      const lightLabel = lightDebt < 0 ? 'Переплата' : 'Долг за свет';
+      const firstPayment = getUpcomingFirstPayment(box);
+
+      const noteText = firstPayment
+        ? `Первый платёж — ${firstPayment.date.toLocaleDateString('ru-RU')}`
+        : (box.payDay ? `Оплата — ${box.payDay} числа` : (box.desc || ''));
 
       card.innerHTML = `
-        <div class="thumb">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v8l8 4 8-4V8"/><path d="M12 12v8"/></svg>
-        </div>
         <div class="body">
           <div class="box-card-top">
             <h4>${box.name}</h4>
             <div class="box-card-price">${box.price ? box.price : '—'} / ${box.period === 'день' ? 'сутки' : 'мес.'}</div>
           </div>
-          <div class="box-card-debts">
-            <div class="box-card-debt-item">
-              <span class="box-card-debt-label">${rentLabel}</span>
-              <span class="box-card-debt-value ${rentDebt > 0 ? 'due' : ''}">${formatMoney(Math.abs(rentDebt))}</span>
-            </div>
-            <div class="box-card-debt-divider"></div>
-            <div class="box-card-debt-item">
-              <span class="box-card-debt-label">${lightLabel}</span>
-              <span class="box-card-debt-value ${lightDebt > 0 ? 'due' : ''}">${formatMoney(Math.abs(lightDebt))}</span>
-            </div>
+          <div class="box-stats">
+            <span class="box-stat">Аренда<b class="${rentDebt > 0 ? 'due' : ''}">${formatDebtText(rentDebt)}</b></span>
+            <span class="box-stat-sep">·</span>
+            <span class="box-stat">Свет<b class="${lightDebt > 0 ? 'due' : ''}">${formatDebtText(lightDebt)}</b></span>
           </div>
-          ${getUpcomingFirstPayment(box) ? `<div class="dims">Первый платёж — ${getUpcomingFirstPayment(box).date.toLocaleDateString('ru-RU')}, дальше по графику</div>` : (box.payDay ? `<div class="dims">Оплата — ${box.payDay} числа</div>` : '')}
-          ${box.desc ? `<div class="desc-line">${box.desc}</div>` : ''}
+          ${noteText ? `<div class="note-line">${noteText}</div>` : ''}
         </div>`;
       list.appendChild(card);
     });
@@ -3925,12 +4103,15 @@
     }
   }
 
-  function deleteBox(){
+  async function deleteBox(){
     if(editingBoxIndex === null) return;
     const box = boxesData[editingBoxIndex];
     if(!box) return;
 
-    const ok = confirm(`Удалить бокс «${box.name}»? Вся история платежей и показаний счётчика этого бокса будет удалена без возможности восстановления. Долги контактов при этом сохранятся и никуда не денутся.`);
+    const ok = await confirmDelete(
+      'Удалить бокс?',
+      `«${box.name}» — вся история платежей и показаний счётчика будет удалена без возможности восстановления. Долги контактов при этом сохранятся.`
+    );
     if(!ok) return;
 
     boxesData.splice(editingBoxIndex, 1);
@@ -3945,7 +4126,7 @@
     renderBoxes();
     renderContacts();
     renderReport();
-    showToast('Бокс удалён');
+    showDeletedAnimation(`Бокс «${box.name}»`);
   }
 
   /* ---------- TEMPORARY BOOKINGS ---------- */
@@ -4056,12 +4237,15 @@
     renderReport();
   }
 
-  function deleteTemporaryBooking(){
+  async function deleteTemporaryBooking(){
     if(editingTemporaryIndex === null) return;
     const b = temporaryBookings[editingTemporaryIndex];
     if(!b) return;
 
-    const ok = confirm(`Удалить временную бронь «${b.name}»? Это действие нельзя отменить.`);
+    const ok = await confirmDelete(
+      'Удалить бронь?',
+      `Временная бронь «${b.name}» будет удалена без возможности восстановления.`
+    );
     if(!ok) return;
 
     temporaryBookings.splice(editingTemporaryIndex, 1);
@@ -4071,7 +4255,7 @@
     closeTemporaryModal();
     renderTemporaryList();
     renderReport();
-    showToast('Бронь удалена');
+    showDeletedAnimation(`Бронь «${b.name}»`);
   }
 
   let tempExtendIndex = null;
@@ -4268,6 +4452,7 @@
 
     emptyEl.style.display = temporaryBookings.length ? 'none' : 'block';
     updateTemporaryTimers();
+    updateNotificationBadge();
   }
 
   function toggleTempCardExpand(index){
@@ -4477,10 +4662,10 @@
     const isCredit = amount < 0;
     const isZero = amount === 0;
 
-    amountEl.textContent = formatMoney(Math.abs(amount));
+    amountEl.textContent = formatDebtText(amount);
     amountEl.classList.toggle('zero', isZero || isCredit);
     cardEl.classList.toggle('zero', isZero || isCredit);
-    labelEl.textContent = isCredit ? 'Переплата за ' + label : 'Долг за ' + label;
+    labelEl.textContent = 'Долг за ' + label;
   }
 
   function renderPaid(box){
@@ -4728,13 +4913,13 @@
       card.innerHTML = `
         <div class="row1">
           <div class="fio">${c.fio}</div>
-          <div class="debt ${debtIsZero || isCredit ? 'zero' : ''}">${isCredit ? '+' : ''}${formatMoney(Math.abs(total))}</div>
+          <div class="debt ${debtIsZero || isCredit ? 'zero' : ''}">${formatDebtText(total)}</div>
         </div>
         ${c.phone ? `<div class="phone-line">${c.phone}</div>` : ''}
         ${hasBoxDebt ? `
         <div class="debt-breakdown">
-          <span class="debt-chip">${(c.debtRent || 0) < 0 ? 'Переплата (аренда)' : 'Аренда'}: ${formatMoney(Math.abs(c.debtRent || 0))}</span>
-          <span class="debt-chip">${(c.debtLight || 0) < 0 ? 'Переплата (свет)' : 'Свет'}: ${formatMoney(Math.abs(c.debtLight || 0))}</span>
+          <span class="debt-chip">Аренда: ${formatDebtText(c.debtRent || 0)}</span>
+          <span class="debt-chip">Свет: ${formatDebtText(c.debtLight || 0)}</span>
         </div>` : ''}
         ${c.desc ? `<div class="desc-line">${c.desc}</div>` : ''}
       `;
@@ -4828,14 +5013,14 @@
     document.getElementById('cdetail-paid').textContent = formatMoney(getContactPaidTotal(c));
 
     const rentIsCredit = (c.debtRent || 0) < 0;
-    document.getElementById('cdetail-rent').textContent = formatMoney(Math.abs(c.debtRent || 0));
+    document.getElementById('cdetail-rent').textContent = formatDebtText(c.debtRent || 0);
     document.getElementById('cdetail-rent-card').classList.toggle('mini-credit', rentIsCredit);
-    document.querySelector('#cdetail-rent-card .debt-label').textContent = rentIsCredit ? 'Переплата' : 'За аренду';
+    document.querySelector('#cdetail-rent-card .debt-label').textContent = 'За аренду';
 
     const lightIsCredit = (c.debtLight || 0) < 0;
-    document.getElementById('cdetail-light').textContent = formatMoney(Math.abs(c.debtLight || 0));
+    document.getElementById('cdetail-light').textContent = formatDebtText(c.debtLight || 0);
     document.getElementById('cdetail-light-card').classList.toggle('mini-credit', lightIsCredit);
-    document.querySelector('#cdetail-light-card .debt-label').textContent = lightIsCredit ? 'Переплата' : 'За свет';
+    document.querySelector('#cdetail-light-card .debt-label').textContent = 'За свет';
 
     const phoneEl = document.getElementById('cdetail-phone-line');
     if(c.phone){
@@ -4905,11 +5090,14 @@
     document.getElementById('contact-modal').classList.add('open');
   }
 
-  function deleteContact(){
+  async function deleteContact(){
     const c = contactsData[currentContactDetailIndex];
     if(!c) return;
 
-    const ok = confirm(`Удалить контакт «${c.fio}»? Это действие нельзя отменить.`);
+    const ok = await confirmDelete(
+      'Удалить контакт?',
+      `«${c.fio}» будет удалён из всех боксов без возможности восстановления.`
+    );
     if(!ok) return;
 
     boxesData.forEach(box => {
@@ -4923,7 +5111,7 @@
     renderContacts();
     renderBoxes();
     renderReport();
-    showToast('Контакт удалён');
+    showDeletedAnimation(`Контакт «${c.fio}»`);
   }
 
   /* ---------- DEBT TRANSFER (перенос долга на новую дату) ---------- */
@@ -5320,6 +5508,40 @@
     }
   }
 
+  /* ---------- DELETE CONFIRM + DELETED SUCCESS ---------- */
+  // Replaces the browser's native confirm() with a styled dialog matching the
+  // rest of the app. Returns a promise resolving to true (Да) or false (Нет).
+  let pendingConfirmResolve = null;
+
+  function confirmDelete(title, text){
+    return new Promise(resolve => {
+      pendingConfirmResolve = resolve;
+      document.getElementById('confirm-title').textContent = title || 'Удалить?';
+      document.getElementById('confirm-text').textContent = text || '';
+      const overlay = document.getElementById('confirm-overlay');
+      overlay.classList.remove('open');
+      void overlay.offsetWidth;
+      overlay.classList.add('open');
+    });
+  }
+
+  function resolveConfirm(answer){
+    document.getElementById('confirm-overlay').classList.remove('open');
+    const resolve = pendingConfirmResolve;
+    pendingConfirmResolve = null;
+    if(resolve) resolve(answer);
+  }
+
+  function showDeletedAnimation(subtitle){
+    const overlay = document.getElementById('deleted-overlay');
+    document.getElementById('deleted-subtitle').textContent = subtitle || '';
+    overlay.classList.remove('open');
+    void overlay.offsetWidth;
+    overlay.classList.add('open');
+    clearTimeout(window.__deletedTimeout);
+    window.__deletedTimeout = setTimeout(() => overlay.classList.remove('open'), 2000);
+  }
+
   /* ---------- FAILED SENDS (unsent reports/notifications, retry queue) ---------- */
   let failedSends = [];
   let failedSendIdCounter = 0;
@@ -5341,6 +5563,56 @@
     renderFailedSends();
   }
 
+  /* ---------- NOTIFICATION BADGE ---------- */
+  // Значок в шапке всегда отражает две вещи: сколько отчётов не ушло в
+  // WhatsApp и сколько временных броней просрочено (срок истёк, но бронь
+  // не завершена).
+  function getExpiredTemporaryBookings(){
+    const now = new Date();
+    return temporaryBookings.filter(b => {
+      if(b.status === 'завершена') return false;
+      if(!b.startDate) return false;
+      const qty = parseFloat(b.durationValue) || 0;
+      if(!qty) return false;
+      const start = new Date(b.startDate + 'T' + (b.startTime || '00:00') + ':00');
+      if(isNaN(start.getTime())) return false;
+      const durationMs = qty * (b.durationType === 'сутки' ? 86400000 : 3600000);
+      return now > new Date(start.getTime() + durationMs);
+    });
+  }
+
+  function updateNotificationBadge(){
+    const badge = document.getElementById('notif-badge');
+    if(!badge) return;
+    const count = failedSends.length + getExpiredTemporaryBookings().length;
+    badge.textContent = count > 99 ? '99+' : String(count);
+    badge.classList.toggle('show', count > 0);
+  }
+
+  function openNotifications(){
+    const expired = getExpiredTemporaryBookings();
+
+    if(!failedSends.length && !expired.length){
+      showToast('Новых уведомлений нет');
+      return;
+    }
+
+    if(failedSends.length){
+      showScreen('home');
+      switchHomeTab('report');
+      showToast(`Не отправлено отчётов: ${failedSends.length}`);
+      return;
+    }
+
+    // Только просроченные брони — открываем их список.
+    if(temporaryBoxesEnabled){
+      showScreen('temporary');
+    }
+    showToast(`Истёк срок аренды: ${expired.length}`);
+  }
+
+  setInterval(updateNotificationBadge, 60000);
+
   function renderFailedSends(){
     const card = document.getElementById('failed-sends-card');
     const list = document.getElementById('failed-sends-list');
@@ -5361,6 +5633,7 @@
     });
 
     card.style.display = failedSends.length ? 'block' : 'none';
+    updateNotificationBadge();
   }
 
   async function retryFailedSend(id){
@@ -5467,147 +5740,153 @@
 
     const pageW = doc.internal.pageSize.getWidth();
     const pageH = doc.internal.pageSize.getHeight();
-    const marginX = 16;
+    const marginX = 20;
     const contentW = pageW - marginX * 2;
-    const footerLineY = pageH - 16;
+    const rightX = pageW - marginX;
 
-    function newPage(){
-      doc.addPage();
-      return 24;
+    doc.setTextColor(...C.ink);
+
+    /* ---- Centered bold title ---- */
+    let y = 28;
+    doc.setFont('DejaVuSans', 'bold');
+    doc.setFontSize(13.5);
+    doc.text('ОТЧЁТ ПО АРЕНДЕ БОКСА', pageW / 2, y, { align: 'center' });
+
+    /* ---- Right-aligned date ---- */
+    y += 12;
+    doc.setFont('DejaVuSans', 'normal');
+    doc.setFontSize(10);
+    doc.text('Дата: ' + new Date().toLocaleDateString('ru-RU'), rightX, y, { align: 'right' });
+
+    /* ---- Label/value pairs (bold label, normal value) ---- */
+    function pairRow(leftLabel, leftValue, rightLabel, rightValue){
+      doc.setFontSize(10);
+      doc.setFont('DejaVuSans', 'bold');
+      const lw = doc.getTextWidth(leftLabel + ' ');
+      doc.text(leftLabel, marginX, y);
+      doc.setFont('DejaVuSans', 'normal');
+      doc.text(pdfFitText(doc, String(leftValue), contentW * 0.55 - lw), marginX + lw, y);
+
+      if(rightLabel){
+        doc.setFont('DejaVuSans', 'normal');
+        const vw = doc.getTextWidth(String(rightValue));
+        doc.text(String(rightValue), rightX, y, { align: 'right' });
+        doc.setFont('DejaVuSans', 'bold');
+        doc.text(rightLabel, rightX - vw - 2, y, { align: 'right' });
+      }
+      y += 9;
     }
 
-    /* ---- Simple header ---- */
-    doc.setFont('DejaVuSans', 'bold');
-    doc.setFontSize(19);
-    doc.setTextColor(...C.ink);
-    doc.text(companyName || 'Аренда', marginX, 22);
-    doc.setFont('DejaVuSans', 'normal');
-    doc.setFontSize(11);
-    doc.setTextColor(...C.inkSoft);
-    doc.text('Отчёт по клиенту · ' + new Date().toLocaleDateString('ru-RU'), marginX, 30);
-    doc.setDrawColor(...C.line);
-    doc.setLineWidth(0.6);
-    doc.line(marginX, 36, pageW - marginX, 36);
-
-    let y = 48;
-
-    /* ---- Client info: simple stacked lines, big and readable ---- */
-    doc.setFont('DejaVuSans', 'bold');
-    doc.setFontSize(15);
-    doc.setTextColor(...C.ink);
-    doc.text(pdfFitText(doc, contact.fio, contentW), marginX, y);
     y += 9;
+    pairRow('Арендодатель:', companyName || 'Аренда', '', '');
+    pairRow('Арендатор:', contact.fio, contact.phone ? 'Тел:' : '', contact.phone || '');
+    if(contact.address) pairRow('Адрес:', contact.address, '', '');
 
-    doc.setFont('DejaVuSans', 'normal');
-    doc.setFontSize(11.5);
-    doc.setTextColor(...C.inkSoft);
-    if(contact.phone){
-      doc.text(contact.phone, marginX, y);
-      y += 7;
-    }
-    if(contact.address){
-      doc.text(pdfFitText(doc, contact.address, contentW), marginX, y);
-      y += 7;
-    }
     const boxNames = getContactBoxNames(contact);
-    doc.text('Бокс: ' + (boxNames.length ? pdfFitText(doc, boxNames.join(', '), contentW - 16) : 'не привязан'), marginX, y);
-    y += 14;
+    pairRow('Бокс:', boxNames.length ? boxNames.join(', ') : 'не привязан', '', '');
 
-    /* ---- Balance: big stacked lines, no tiny table cells ---- */
+    const paidTotal = getContactPaidTotal(contact);
     const total = contactTotalDebt(contact);
-    const balanceRows = [
-      ['Оплачено всего', formatMoney(getContactPaidTotal(contact)), false],
-      ['Долг за аренду', formatMoney(Math.abs(contact.debtRent || 0)) + (contact.debtRent < 0 ? ' (переплата)' : ''), (contact.debtRent || 0) > 0],
-      ['Долг за свет', formatMoney(Math.abs(contact.debtLight || 0)) + (contact.debtLight < 0 ? ' (переплата)' : ''), (contact.debtLight || 0) > 0]
+    pairRow('Оплачено всего:', formatMoney(paidTotal), 'Итого долг:', formatDebtText(total));
+    pairRow('Долг за аренду:', formatDebtText(contact.debtRent || 0), 'Долг за свет:', formatDebtText(contact.debtLight || 0));
+
+    /* ---- Bordered payments table ---- */
+    y += 6;
+
+    const cols = [
+      { title: '№',      w: 16,  align: 'center' },
+      { title: 'Дата',   w: 34,  align: 'center' },
+      { title: 'Тип',    w: 46,  align: 'center' },
+      { title: 'Бокс',   w: contentW - 16 - 34 - 46 - 38, align: 'center' },
+      { title: 'Сумма',  w: 38,  align: 'center' }
     ];
 
-    balanceRows.forEach(([label, value, isDue]) => {
-      doc.setFont('DejaVuSans', 'normal');
-      doc.setFontSize(12);
-      doc.setTextColor(...C.inkSoft);
-      doc.text(label, marginX, y);
-      doc.setFont('DejaVuSans', 'bold');
-      doc.setFontSize(13.5);
-      doc.setTextColor(...(isDue ? C.goldDeep : C.ink));
-      doc.text(value, pageW - marginX, y, { align: 'right' });
-      y += 9;
-    });
+    const headerH = 12;
+    const rowH = 11;
 
-    y += 3;
-    doc.setDrawColor(...C.line);
-    doc.line(marginX, y, pageW - marginX, y);
-    y += 11;
+    function drawRow(cells, yPos, h, bold){
+      let x = marginX;
+      doc.setDrawColor(...C.ink);
+      doc.setLineWidth(0.35);
+      doc.setFont('DejaVuSans', bold ? 'bold' : 'normal');
+      doc.setFontSize(bold ? 9.5 : 9);
+      doc.setTextColor(...C.ink);
 
-    doc.setFont('DejaVuSans', 'bold');
-    doc.setFontSize(15);
-    doc.setTextColor(...C.ink);
-    doc.text('Итого долг', marginX, y);
-    doc.setFontSize(18);
-    doc.setTextColor(...(total > 0 ? C.goldDeep : C.sageDeep));
-    doc.text(formatMoney(Math.abs(total)) + (total < 0 ? ' (переплата)' : ''), pageW - marginX, y, { align: 'right' });
-    y += 16;
+      cols.forEach((col, i) => {
+        doc.rect(x, yPos, col.w, h);
+        const text = pdfFitText(doc, String(cells[i] ?? ''), col.w - 4);
+        doc.text(text, x + col.w / 2, yPos + h / 2 + 1.4, { align: 'center' });
+        x += col.w;
+      });
+      return yPos + h;
+    }
 
-    /* ---- Payment history: simple two-line entries, no table grid ---- */
-    doc.setFont('DejaVuSans', 'bold');
-    doc.setFontSize(14);
-    doc.setTextColor(...C.ink);
-    doc.text('История платежей', marginX, y);
-    y += 11;
+    y = drawRow(cols.map(c => c.title), y, headerH, true);
 
     const rows = [];
     boxesData.forEach(box => {
       if((box.clients || []).includes(contact.fio)){
         (box.payments || []).forEach(p => {
-          rows.push({ date: p.date, type: p.type, box: box.name, amount: formatMoney(p.amount) });
+          rows.push([p.date, p.type, box.name, formatMoney(p.amount)]);
         });
       }
     });
 
     if(!rows.length){
+      doc.setDrawColor(...C.ink);
+      doc.setLineWidth(0.35);
+      doc.rect(marginX, y, contentW, rowH);
       doc.setFont('DejaVuSans', 'normal');
-      doc.setFontSize(12);
-      doc.setTextColor(...C.inkSoft);
-      doc.text('Платежей пока не было', marginX, y);
-      y += 10;
+      doc.setFontSize(9);
+      doc.text('Платежей пока не было', marginX + contentW / 2, y + rowH / 2 + 1.4, { align: 'center' });
+      y += rowH;
     } else {
       rows.forEach((row, i) => {
-        if(y > footerLineY - 22){
-          y = newPage();
+        if(y + rowH > pageH - 60){
+          doc.addPage();
+          y = 24;
+          y = drawRow(cols.map(c => c.title), y, headerH, true);
         }
-        doc.setFont('DejaVuSans', 'bold');
-        doc.setFontSize(13);
-        doc.setTextColor(...C.ink);
-        doc.text(pdfFitText(doc, row.type, contentW - 40), marginX, y);
-        doc.text(row.amount, pageW - marginX, y, { align: 'right' });
-        y += 6.5;
-
-        doc.setFont('DejaVuSans', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(...C.inkSoft);
-        doc.text(pdfFitText(doc, `${row.date} · ${row.box}`, contentW), marginX, y);
-        y += 8;
-
-        if(i < rows.length - 1){
-          doc.setDrawColor(...C.line);
-          doc.setLineWidth(0.3);
-          doc.line(marginX, y - 3, pageW - marginX, y - 3);
-        }
+        y = drawRow([String(i + 1), ...row], y, rowH, false);
       });
     }
 
-    /* ---- Footer on every page ---- */
-    const pageCount = doc.internal.getNumberOfPages();
-    for(let i = 1; i <= pageCount; i++){
-      doc.setPage(i);
-      doc.setDrawColor(...C.line);
-      doc.setLineWidth(0.3);
-      doc.line(marginX, footerLineY - 4, pageW - marginX, footerLineY - 4);
-      doc.setFont('DejaVuSans', 'normal');
-      doc.setFontSize(9);
-      doc.setTextColor(...C.inkSoft);
-      doc.text(`${companyName || 'Аренда'} · ${new Date().toLocaleDateString('ru-RU')}`, marginX, footerLineY);
-      doc.text(`${i} / ${pageCount}`, pageW - marginX, footerLineY, { align: 'right' });
+    /* ---- Closing paragraph ---- */
+    y += 14;
+    doc.setFont('DejaVuSans', 'normal');
+    doc.setFontSize(10);
+    doc.setTextColor(...C.ink);
+    const paragraph = 'Настоящий отчёт подтверждает состояние взаиморасчётов между Арендодателем и Арендатором по указанному боксу на дату формирования документа.';
+    const lines = doc.splitTextToSize(paragraph, contentW);
+    lines.forEach(line => {
+      if(y > pageH - 45){
+        doc.addPage();
+        y = 24;
+      }
+      doc.text(line, marginX, y);
+      y += 6;
+    });
+
+    /* ---- Signature lines ---- */
+    y += 22;
+    if(y > pageH - 30){
+      doc.addPage();
+      y = pageH - 45;
     }
+    const sigW = 62;
+    const leftSigX = marginX + 8;
+    const rightSigX = rightX - sigW - 8;
+
+    doc.setDrawColor(...C.ink);
+    doc.setLineWidth(0.35);
+    doc.line(leftSigX, y, leftSigX + sigW, y);
+    doc.line(rightSigX, y, rightSigX + sigW, y);
+
+    y += 6;
+    doc.setFontSize(9);
+    doc.setTextColor(...C.inkSoft);
+    doc.text('Арендодатель', leftSigX + sigW / 2, y, { align: 'center' });
+    doc.text('Арендатор', rightSigX + sigW / 2, y, { align: 'center' });
 
     return doc.output('blob');
   }
@@ -6013,6 +6292,7 @@
   checkDebtTransfers(false);
   checkTemporaryOverdue(false);
   initRetrySettingsInputs();
+  updateNotificationBadge();
 </script>
 
 </body>

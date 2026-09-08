@@ -2250,9 +2250,9 @@
               <div class="meter-hint">Данные можно получить в личном кабинете на <a href="https://green-api.com" target="_blank" style="color:var(--gold-deep); font-weight:700;">green-api.com</a>. После подключения в карточке контакта появится кнопка отправки отчёта (формат — ниже, в разделе «Формат отчёта клиенту»).</div>
             </div>
             <div class="field">
-              <label>Автоотправка при оплате</label>
+              <label>Автоотправка при изменениях</label>
               <div class="toggle-row">
-                <span class="toggle-desc">После записи платежа клиенту с указанным телефоном автоматически придёт отчёт</span>
+                <span class="toggle-desc">Клиенту с указанным телефоном автоматически придёт уведомление в WhatsApp при оплате, новых показаниях счётчика, продлении временной брони и завершении аренды бокса</span>
                 <label class="switch">
                   <input type="checkbox" id="input-auto-send">
                   <span class="slider"></span>
@@ -4149,6 +4149,69 @@
     renderContacts();
     renderReport();
     showDeletedAnimation(`Бокс «${box.name}»`);
+
+    const willNotify = autoSendOnPayment && greenApiIdInstance && greenApiToken &&
+      (box.clients || []).some(fio => {
+        const c = contactsData.find(x => x.fio === fio);
+        return c && c.phone;
+      });
+    if(willNotify){
+      notifyClientsOnBoxCompletion(box);
+    }
+  }
+
+  function buildBoxCompletionMessage(contact, box){
+    const debtText = formatDebtText(boxTotalDebt(box));
+    return `🏁 *Аренда завершена*\n\nЗдравствуйте, *${contact.fio}*!\n\nАренда бокса «*${box.name}*» в *${companyName || 'Аренда'}* завершена.\n\n📊 Итоговый долг: *${debtText}*`;
+  }
+
+  async function sendBoxCompletionNotification(contact, box){
+    if(!greenApiIdInstance || !greenApiToken || !contact.phone) return { ok:false };
+    try{
+      const phoneDigits = contact.phone.replace(/\D/g, '');
+      const chatId = phoneDigits + '@c.us';
+      const message = buildBoxCompletionMessage(contact, box);
+      const url = `https://api.green-api.com/waInstance${greenApiIdInstance}/sendMessage/${greenApiToken}`;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chatId, message })
+      });
+      return { ok: resp.ok };
+    } catch(err){
+      console.error(err);
+      return { ok:false };
+    }
+  }
+
+  async function notifyClientsOnBoxCompletion(box){
+    if(!autoSendOnPayment || !greenApiIdInstance || !greenApiToken) return { ok:false, skipped:true };
+
+    const clients = (box.clients || [])
+      .map(fio => contactsData.find(c => c.fio === fio))
+      .filter(c => c && c.phone);
+
+    if(!clients.length) return { ok:false, skipped:true };
+
+    const results = await Promise.all(clients.map(async c => {
+      const r = await sendBoxCompletionNotification(c, box);
+      if(!r.ok){
+        addFailedSend({
+          label: `Завершение аренды — ${c.fio} (бокс «${box.name}»)`,
+          phone: c.phone,
+          retry: () => sendBoxCompletionNotification(c, box)
+        });
+      }
+      return r;
+    }));
+    const successCount = results.filter(r => r.ok).length;
+
+    return {
+      ok: successCount === clients.length,
+      text: clients.length > 1
+        ? `Отправлено ${successCount} из ${clients.length}`
+        : (successCount ? 'Отправлено клиенту' : 'Не удалось отправить')
+    };
   }
 
   /* ---------- TEMPORARY BOOKINGS ---------- */
@@ -4626,6 +4689,7 @@
 
     const box = boxesData[currentDetailIndex];
     const newReading = parseFloat(raw.replace(/[^0-9.]/g, '')) || 0;
+    const prevReading = box.meterCurrent || 0;
 
     box.meterCurrent = newReading;
 
@@ -4638,6 +4702,71 @@
 
     const meterEl = document.getElementById('detail-meter');
     meterEl.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg>Счётчик: ${box.meterCurrent} кВт (начало отсчёта — ${box.meterStart} кВт)`;
+
+    const willNotify = autoSendOnPayment && greenApiIdInstance && greenApiToken &&
+      (box.clients || []).some(fio => {
+        const c = contactsData.find(x => x.fio === fio);
+        return c && c.phone;
+      });
+    if(willNotify){
+      notifyClientsOnMeterReading(box, prevReading, newReading).then(result => {
+        showToast(result.ok ? 'Показания сохранены · клиент уведомлён' : 'Показания сохранены, уведомление не отправлено');
+      });
+    }
+  }
+
+  function buildMeterReadingMessage(contact, box, prevReading, newReading){
+    const lightText = formatDebtText(getLightDebt(box));
+    return `📟 *Показания счётчика обновлены*\n\nЗдравствуйте, *${contact.fio}*!\n\nПо боксу «*${box.name}*» в *${companyName || 'Аренда'}* внесены новые показания счётчика: *${newReading} кВт* (было ${prevReading} кВт).\n\n💡 Долг за свет: *${lightText}*`;
+  }
+
+  async function sendMeterReadingNotification(contact, box, prevReading, newReading){
+    if(!greenApiIdInstance || !greenApiToken || !contact.phone) return { ok:false };
+    try{
+      const phoneDigits = contact.phone.replace(/\D/g, '');
+      const chatId = phoneDigits + '@c.us';
+      const message = buildMeterReadingMessage(contact, box, prevReading, newReading);
+      const url = `https://api.green-api.com/waInstance${greenApiIdInstance}/sendMessage/${greenApiToken}`;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chatId, message })
+      });
+      return { ok: resp.ok };
+    } catch(err){
+      console.error(err);
+      return { ok:false };
+    }
+  }
+
+  async function notifyClientsOnMeterReading(box, prevReading, newReading){
+    if(!autoSendOnPayment || !greenApiIdInstance || !greenApiToken) return { ok:false, skipped:true };
+
+    const clients = (box.clients || [])
+      .map(fio => contactsData.find(c => c.fio === fio))
+      .filter(c => c && c.phone);
+
+    if(!clients.length) return { ok:false, skipped:true };
+
+    const results = await Promise.all(clients.map(async c => {
+      const r = await sendMeterReadingNotification(c, box, prevReading, newReading);
+      if(!r.ok){
+        addFailedSend({
+          label: `Показания счётчика — ${c.fio} (бокс «${box.name}»)`,
+          phone: c.phone,
+          retry: () => sendMeterReadingNotification(c, box, prevReading, newReading)
+        });
+      }
+      return r;
+    }));
+    const successCount = results.filter(r => r.ok).length;
+
+    return {
+      ok: successCount === clients.length,
+      text: clients.length > 1
+        ? `Отправлено ${successCount} из ${clients.length}`
+        : (successCount ? 'Отправлено клиенту' : 'Не удалось отправить')
+    };
   }
 
   /* ---------- RENT DURATION (дни аренды + пауза) ---------- */
@@ -5122,6 +5251,58 @@
     return boxesData.filter(box => (box.clients || []).includes(contact.fio)).map(box => box.name);
   }
 
+  // Полная хронологическая история контакта для PDF-отчёта: и оплаты по
+  // боксам (box.payments), и начисления/платежи, записанные вручную через
+  // «Добавить долг» / «Добавить платёж» на карточке контакта (contact.ledger).
+  // Каждой операции считается остаток долга нарастающим итогом.
+  function buildContactLedger(contact){
+    function categoryFromPaymentType(type){
+      if(type === 'За аренду') return 'аренда';
+      if(type === 'За свет') return 'свет';
+      return 'прочее';
+    }
+
+    const entries = [];
+
+    boxesData.forEach(box => {
+      if((box.clients || []).includes(contact.fio)){
+        (box.payments || []).forEach(p => {
+          entries.push({
+            rawDate: p.rawDate || null,
+            date: p.date,
+            label: `Оплата — ${categoryFromPaymentType(p.type)}`,
+            box: box.name,
+            signedAmount: -(parseFloat(String(p.amount).replace(/[^0-9.]/g, '')) || 0)
+          });
+        });
+      }
+    });
+
+    (contact.ledger || []).forEach(e => {
+      entries.push({
+        rawDate: e.rawDate || null,
+        date: e.date,
+        label: `${e.kind} — ${e.category}`,
+        box: '',
+        signedAmount: e.kind === 'Начисление' ? (e.amount || 0) : -(e.amount || 0)
+      });
+    });
+
+    entries.sort((a, b) => {
+      const da = a.rawDate ? new Date(a.rawDate).getTime() : 0;
+      const db = b.rawDate ? new Date(b.rawDate).getTime() : 0;
+      return da - db;
+    });
+
+    let running = 0;
+    entries.forEach(e => {
+      running += e.signedAmount;
+      e.balance = running;
+    });
+
+    return entries;
+  }
+
   function openContactDetail(index){
     currentContactDetailIndex = index;
     const c = contactsData[index];
@@ -5555,6 +5736,17 @@
       amountNum
     );
 
+    // Каждое начисление и каждый платёж по контакту сохраняются с датой,
+    // чтобы попасть построчно в PDF-отчёт клиенту (см. buildContactLedger).
+    contact.ledger = contact.ledger || [];
+    contact.ledger.push({
+      date: new Date().toLocaleDateString('ru-RU'),
+      rawDate: new Date().toISOString(),
+      kind: contactAmountMode === 'debt' ? 'Начисление' : 'Оплата',
+      category: categoryLabel,
+      amount: amountNum
+    });
+
     closeContactAmountModal();
     openContactDetail(currentContactDetailIndex);
     renderContacts();
@@ -5927,11 +6119,12 @@
     y += 6;
 
     const cols = [
-      { title: '№',      w: 16,  align: 'center' },
-      { title: 'Дата',   w: 34,  align: 'center' },
-      { title: 'Тип',    w: 46,  align: 'center' },
-      { title: 'Бокс',   w: contentW - 16 - 34 - 46 - 38, align: 'center' },
-      { title: 'Сумма',  w: 38,  align: 'center' }
+      { title: '№',        w: 12,  align: 'center' },
+      { title: 'Дата',     w: 26,  align: 'center' },
+      { title: 'Тип',      w: 44,  align: 'center' },
+      { title: 'Бокс',     w: contentW - 12 - 26 - 44 - 30 - 30, align: 'center' },
+      { title: 'Сумма',    w: 30,  align: 'center' },
+      { title: 'Остаток',  w: 30,  align: 'center' }
     ];
 
     const headerH = 12;
@@ -5956,14 +6149,14 @@
 
     y = drawRow(cols.map(c => c.title), y, headerH, true);
 
-    const rows = [];
-    boxesData.forEach(box => {
-      if((box.clients || []).includes(contact.fio)){
-        (box.payments || []).forEach(p => {
-          rows.push([p.date, p.type, box.name, formatMoney(p.amount)]);
-        });
-      }
-    });
+    const ledger = buildContactLedger(contact);
+    const rows = ledger.map(e => [
+      e.date,
+      e.label,
+      e.box || '—',
+      formatMoney(Math.abs(e.signedAmount)),
+      formatDebtText(e.balance)
+    ]);
 
     if(!rows.length){
       doc.setDrawColor(...C.ink);
@@ -5971,7 +6164,7 @@
       doc.rect(marginX, y, contentW, rowH);
       doc.setFont('DejaVuSans', 'normal');
       doc.setFontSize(9);
-      doc.text('Платежей пока не было', marginX + contentW / 2, y + rowH / 2 + 1.4, { align: 'center' });
+      doc.text('Операций пока не было', marginX + contentW / 2, y + rowH / 2 + 1.4, { align: 'center' });
       y += rowH;
     } else {
       rows.forEach((row, i) => {

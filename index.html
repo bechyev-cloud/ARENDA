@@ -3148,19 +3148,19 @@
   let showDebtTransfersHistory = true;
   let showRentDuration = true;
   let reportSendMethod = 'pdf';
-  let textReportTemplate = '📋 *Отчёт по оплате* — {компания}\n\nЗдравствуйте, *{имя}*!\n\n📦 Бокс: *{бокс}*\n\n✅ Оплачено всего: *{оплачено}*\n🏠 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n📊 Итого долг: *{долг}*\n\nСпасибо, что вы с нами! 🙏';
+  let textReportTemplate = '📋 *Отчёт по оплате* — {компания}\n\nЗдравствуйте, *{имя}*!\n\n📦 Бокс: *{бокс}*\n\n✅ Оплачено всего: *{оплачено}*\n🏠 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n\n📊 Текущий долг: *{долг}*';
   let greenApiIdInstance = '';
   let greenApiToken = '';
   let autoSendOnPayment = true;
   let remindersEnabled = false;
   let reminderTime = '10:00';
-  let reminderTemplate = '👋 Здравствуйте, *{имя}*!\n\n📅 Сегодня, *{день} числа*, день оплаты за бокс «*{бокс}*» в *{компания}*.\n\n💰 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n📊 Итого к оплате: *{долг}*\n\nБудем рады видеть вас — оплатить можно любым удобным способом. Спасибо, что вы с нами! 🙏';
+  let reminderTemplate = '👋 Здравствуйте, *{имя}*!\n\n📅 Сегодня, *{день} числа*, день оплаты за бокс «*{бокс}*» в *{компания}*.\n\n💰 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n\nОплатить можно любым удобным способом.\n\n📊 Текущий долг: *{долг}*';
   let temporaryBoxesEnabled = false;
   let lastReminderDate = (function(){
     try{ return localStorage.getItem('murbox_last_reminder_date'); } catch(e){ return null; }
   })();
   let overdueNotificationsEnabled = false;
-  let overdueTemplate = '{иконка} *{заголовок}*\n\nЗдравствуйте, *{имя}*!\n\nПо боксу «*{бокс}*» в *{компания}* уже *{дней} дней* числится задолженность.\n\n💰 Текущий долг: *{долг}*\n\nПожалуйста, погасите его при первой возможности — если уже оплатили, извините за беспокойство! 🙏';
+  let overdueTemplate = '{иконка} *{заголовок}*\n\nЗдравствуйте, *{имя}*!\n\nПо боксу «*{бокс}*» в *{компания}* уже *{дней} дней* числится задолженность.\n\n📊 Текущий долг: *{долг}*';
   let lastOverdueCheckDate = (function(){
     try{ return localStorage.getItem('murbox_last_overdue_check'); } catch(e){ return null; }
   })();
@@ -3536,14 +3536,14 @@
     autoSendOnPayment = true;
     remindersEnabled = false;
     reminderTime = '10:00';
-    reminderTemplate = '👋 Здравствуйте, *{имя}*!\n\n📅 Сегодня, *{день} числа*, день оплаты за бокс «*{бокс}*» в *{компания}*.\n\n💰 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n📊 Итого к оплате: *{долг}*\n\nБудем рады видеть вас — оплатить можно любым удобным способом. Спасибо, что вы с нами! 🙏';
+    reminderTemplate = '👋 Здравствуйте, *{имя}*!\n\n📅 Сегодня, *{день} числа*, день оплаты за бокс «*{бокс}*» в *{компания}*.\n\n💰 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n\nОплатить можно любым удобным способом.\n\n📊 Текущий долг: *{долг}*';
     temporaryBoxesEnabled = false;
     overdueNotificationsEnabled = false;
-    overdueTemplate = '{иконка} *{заголовок}*\n\nЗдравствуйте, *{имя}*!\n\nПо боксу «*{бокс}*» в *{компания}* уже *{дней} дней* числится задолженность.\n\n💰 Текущий долг: *{долг}*\n\nПожалуйста, погасите его при первой возможности — если уже оплатили, извините за беспокойство! 🙏';
+    overdueTemplate = '{иконка} *{заголовок}*\n\nЗдравствуйте, *{имя}*!\n\nПо боксу «*{бокс}*» в *{компания}* уже *{дней} дней* числится задолженность.\n\n📊 Текущий долг: *{долг}*';
     showDebtTransfersHistory = true;
     showRentDuration = true;
     reportSendMethod = 'pdf';
-    textReportTemplate = '📋 *Отчёт по оплате* — {компания}\n\nЗдравствуйте, *{имя}*!\n\n📦 Бокс: *{бокс}*\n\n✅ Оплачено всего: *{оплачено}*\n🏠 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n📊 Итого долг: *{долг}*\n\nСпасибо, что вы с нами! 🙏';
+    textReportTemplate = '📋 *Отчёт по оплате* — {компания}\n\nЗдравствуйте, *{имя}*!\n\n📦 Бокс: *{бокс}*\n\n✅ Оплачено всего: *{оплачено}*\n🏠 Долг за аренду: *{аренда}*\n💡 Долг за свет: *{свет}*\n\n📊 Текущий долг: *{долг}*';
 
     cancelFullReset();
     updateCompanyNameDisplay(companyName);
@@ -5299,23 +5299,36 @@
     showToast('Долг перенесён на новую дату');
   }
 
+  // Долг по временной брони: начислено (ставка × срок) минус оплачено.
+  function getTempBookingDebt(booking){
+    const rate = parseFloat(String(booking.durationType === 'сутки' ? booking.priceDay : booking.priceHour).replace(/[^0-9.]/g, '')) || 0;
+    const qty = parseFloat(booking.durationValue) || 0;
+    const charged = rate * qty;
+    const paid = (booking.payments || []).reduce((sum, p) => {
+      return sum + (parseFloat(String(p.amount).replace(/[^0-9.]/g, '')) || 0);
+    }, 0);
+    return charged - paid;
+  }
+
   function buildTempBookingMessage(booking, kind, extra){
     const company = companyName || 'Аренда';
+    const debtLine = `📊 Текущий долг: *${formatDebtText(getTempBookingDebt(booking))}*`;
+
     if(kind === 'payment'){
-      return `✅ *Оплата принята*\n\nЗдравствуйте, *${booking.name}*!\n\nПолучен платёж: *${formatMoney(extra.amount)}* за временную бронь в *${company}*.\n\nСпасибо, что вы с нами! 🙏`;
+      return `✅ *Оплата принята*\n\nЗдравствуйте, *${booking.name}*!\n\nПолучен платёж: *${formatMoney(extra.amount)}* за временную бронь в *${company}*.\n\n${debtLine}`;
     }
     if(kind === 'extend'){
       const amountLine = extra.amount ? `\n💰 Оплата за продление: *${formatMoney(extra.amount)}*` : '';
-      return `⏳ *Бронь продлена*\n\nЗдравствуйте, *${booking.name}*!\n\nВаша временная бронь в *${company}* продлена на *${extra.qty} ${extra.unitLabel}*.${amountLine}\n\nСпасибо, что вы с нами! 🙏`;
+      return `⏳ *Бронь продлена*\n\nЗдравствуйте, *${booking.name}*!\n\nВаша временная бронь в *${company}* продлена на *${extra.qty} ${extra.unitLabel}*.${amountLine}\n\n${debtLine}`;
     }
     if(kind === 'complete'){
       const statusLine = extra.paid
         ? `✅ Оплата получена: *${formatMoney(extra.amount)}*`
         : `⚠️ Оплата ещё не поступила`;
-      return `🏁 *Бронь завершена*\n\nЗдравствуйте, *${booking.name}*!\n\nВаша временная бронь в *${company}* завершена.\n\n${statusLine}\n\nСпасибо, что вы с нами! 🙏`;
+      return `🏁 *Бронь завершена*\n\nЗдравствуйте, *${booking.name}*!\n\nВаша временная бронь в *${company}* завершена.\n\n${statusLine}\n\n${debtLine}`;
     }
     if(kind === 'overdue'){
-      return `🚨 *Просрочка временной брони*\n\nЗдравствуйте, *${booking.name}*!\n\nСрок вашей временной брони в *${company}* истёк, но бронь всё ещё не завершена и не оплачена.\n\nПожалуйста, свяжитесь с нами как можно скорее. 🙏`;
+      return `🚨 *Просрочка временной брони*\n\nЗдравствуйте, *${booking.name}*!\n\nСрок вашей временной брони в *${company}* истёк, но бронь всё ещё не завершена.\n\n${debtLine}`;
     }
     return '';
   }
@@ -5359,7 +5372,7 @@
   function buildDebtTransferMessage(contact, transfer){
     const debtText = formatDebtText(contactTotalDebt(contact));
     const note = transfer && transfer.note ? `\n\n📝 Напоминаем: «${transfer.note}»` : '';
-    return `📅 *Напоминание о переносе*\n\nЗдравствуйте, *${contact.fio}*!\n\nНаступила дата, на которую был перенесён платёж в *${companyName || 'Аренда'}*.${note}\n\n💰 Актуальный долг: *${debtText}*\n\nПожалуйста, произведите оплату при первой возможности. Спасибо, что вы с нами! 🙏`;
+    return `📅 *Напоминание о переносе*\n\nЗдравствуйте, *${contact.fio}*!\n\nНаступила дата, на которую был перенесён платёж в *${companyName || 'Аренда'}*.${note}\n\n📊 Текущий долг: *${debtText}*`;
   }
 
   async function sendDebtTransferNotification(contact, transfer){
